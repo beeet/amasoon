@@ -2,19 +2,52 @@ package org.amasoon.persistence.customer;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
+import javax.persistence.NoResultException;
 import javax.persistence.Persistence;
+import javax.persistence.TypedQuery;
+import static org.testng.Assert.assertEquals;
+import org.testng.annotations.AfterTest;
+import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
 
 public class CustomerIntTest {
 
-    @Test
-    public void insert() {
-        EntityManagerFactory emf = Persistence.createEntityManagerFactory("amasoon");
-        EntityManager em = emf.createEntityManager();
+    EntityManagerFactory emf;
+    EntityManager em;
+    Customer customer;
+
+    @BeforeTest
+    public void setup() {
+        emf = Persistence.createEntityManagerFactory("amasoon");
+        em = emf.createEntityManager();
         em.getTransaction().begin();
-        final Customer customer = new Customer();
-        customer.setEmail("tester@amasoon.org");
+        customer = new Customer();
+        customer.setEmail("ueli@bundesrat.ch");
+        customer.setName("Ueli Maurer");
         em.persist(customer);
         em.getTransaction().commit();
     }
+
+    @AfterTest
+    public void tearDown() {
+        em.getTransaction().begin();
+        em.remove(customer);
+        em.getTransaction().commit();
+    }
+
+    @Test
+    public void findByEmail() {
+        TypedQuery<Customer> query = em.createNamedQuery(Customer.FIND_BY_EMAIL, Customer.class);
+        query.setParameter("email", "ueli@bundesrat.ch");
+        Customer actual = query.getSingleResult();
+        assertEquals(customer, actual);
+    }
+
+    @Test(expectedExceptions = NoResultException.class)
+    public void findByEmail_EmailNotExist() {
+        TypedQuery<Customer> query = em.createNamedQuery(Customer.FIND_BY_EMAIL, Customer.class);
+        query.setParameter("email", "not@exist.ch");
+        query.getSingleResult();
+    }
+
 }

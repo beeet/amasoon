@@ -27,7 +27,7 @@ public abstract class AbstractIntTestSuite {
     protected static FlatXmlDataSet dataSet;
 
     @BeforeClass
-    public static void setUpDb() throws SQLException, DatabaseUnitException {
+    public  void setUpDb() throws SQLException, DatabaseUnitException {
         emf = Persistence.createEntityManagerFactory("amasoon");
         em = emf.createEntityManager();
 
@@ -41,7 +41,7 @@ public abstract class AbstractIntTestSuite {
     }
 
     @AfterClass
-    public static void tearDownDb() throws SQLException {
+    public  void tearDownDb() throws SQLException {
         if (con != null && !con.isClosed()) {
             con.close();
         }

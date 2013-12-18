@@ -20,5 +20,6 @@
       <property name="eclipselink.logging.parameters" value="true"/>
       <property name="eclipselink.ddl-generation" value="create-tables"/>
     </properties>
+    <mapping-file>META-INF/jpql/customer.xml</mapping-file>
   </persistence-unit>
 </persistence>
