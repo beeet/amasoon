@@ -1,12 +1,13 @@
 package org.amasoon.persistence;
 
+import java.io.Serializable;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.Version;
 
 @MappedSuperclass
-public abstract class BaseEntity {
+public abstract class BaseEntity implements Serializable{
 
     @Id
     @GeneratedValue
@@ -17,5 +18,5 @@ public abstract class BaseEntity {
     public Integer getId() {
         return id;
     }
-
+    
 }

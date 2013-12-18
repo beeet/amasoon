@@ -8,7 +8,7 @@ import org.amasoon.persistence.catalog.Book;
 @Entity
 public class LineItem extends BaseEntity {
 
-    private Integer quantity;
+    private Integer quantity = 0;
 
     @ManyToOne(optional = false)
     private Book book;

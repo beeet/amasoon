@@ -1,12 +1,14 @@
 package org.amasoon.persistence.order;
 
 import java.math.BigDecimal;
-import java.sql.Timestamp;
+import java.sql.Date;
 import java.util.HashSet;
 import java.util.Set;
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
@@ -15,19 +17,24 @@ import org.amasoon.persistence.customer.Address;
 import org.amasoon.persistence.customer.CreditCard;
 import org.amasoon.persistence.customer.Customer;
 
-@Entity
+@Entity(name = "ORDERS")
 public class Order extends BaseEntity {
 
-    private String number;
-    private Timestamp orderDate;
+    public enum Status {
+
+        open, closed, canceled
+    }
+    
+    private String orderNumber;
+    private Date orderDate;
     private BigDecimal amount;
     @Enumerated(EnumType.STRING)
     private Status status;
-    @ManyToOne(optional = false)
+    @ManyToOne(optional = false, fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private Customer customer;
-    @OneToOne(optional = false)
+    @OneToOne(optional = false, fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private Address address;
-    @OneToOne(optional = false)
+    @OneToOne(optional = false, fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private CreditCard creditCard;
     @OneToMany
     private Set<LineItem> lineItems = new HashSet<>();
@@ -56,11 +63,11 @@ public class Order extends BaseEntity {
         this.lineItems = lineItems;
     }
 
-    public Timestamp getOrderDate() {
+    public Date getOrderDate() {
         return orderDate;
     }
 
-    public void setOrderDate(Timestamp orderDate) {
+    public void setOrderDate(Date orderDate) {
         this.orderDate = orderDate;
     }
 
@@ -72,12 +79,12 @@ public class Order extends BaseEntity {
         this.customer = customer;
     }
 
-    public String getNumber() {
-        return number;
+    public String getOrderNumber() {
+        return orderNumber;
     }
 
-    public void setNumber(String number) {
-        this.number = number;
+    public void setOrderNumber(String orderNumber) {
+        this.orderNumber = orderNumber;
     }
 
     public BigDecimal getAmount() {
@@ -94,11 +101,6 @@ public class Order extends BaseEntity {
 
     public void setStatus(Status status) {
         this.status = status;
-    }
-
-    public enum Status {
-
-        open, closed, canceled
     }
 
 }

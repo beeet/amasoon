@@ -1,6 +1,6 @@
 package org.amasoon.persistence.customer;
 
-import java.sql.Timestamp;
+import java.sql.Date;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -17,7 +17,7 @@ public class CreditCard extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private Type type;
     private String number;
-    private Timestamp expirationDate;
+    private Date expirationDate;
 
     public Type getType() {
         return type;
@@ -35,11 +35,11 @@ public class CreditCard extends BaseEntity {
         this.number = number;
     }
 
-    public Timestamp getExpirationDate() {
+    public Date getExpirationDate() {
         return expirationDate;
     }
 
-    public void setExpirationDate(Timestamp expirationDate) {
+    public void setExpirationDate(Date expirationDate) {
         this.expirationDate = expirationDate;
     }
 

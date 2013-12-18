@@ -1,17 +1,22 @@
 package org.amasoon.persistence.customer;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.OneToOne;
+import javax.validation.constraints.NotNull;
 import org.amasoon.persistence.BaseEntity;
 
 @Entity
+//@Table(uniqueConstraints = @UniqueConstraint(columnNames = {"email"}))
 public class Customer extends BaseEntity {
 
+    @NotNull
     private String email;
     private String name;
-    @OneToOne(optional = false)
+    @OneToOne(optional = false, fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private Address address;
-    @OneToOne(optional = false)
+    @OneToOne(optional = false, fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private CreditCard creditCard;
 
     public Address getAddress() {

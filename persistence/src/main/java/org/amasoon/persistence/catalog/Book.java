@@ -1,7 +1,7 @@
 package org.amasoon.persistence.catalog;
 
 import java.math.BigDecimal;
-import java.sql.Timestamp;
+import java.sql.Date;
 import javax.persistence.Entity;
 import org.amasoon.persistence.BaseEntity;
 
@@ -12,7 +12,7 @@ public class Book extends BaseEntity {
     private String title;
     private String authors;
     private String publisher;
-    private Timestamp publicationDate;
+    private Date publicationDate;
     private String binding;
     private Integer numberOfPages;
     private BigDecimal price;
@@ -49,11 +49,11 @@ public class Book extends BaseEntity {
         this.publisher = publisher;
     }
 
-    public Timestamp getPublicationDate() {
+    public Date getPublicationDate() {
         return publicationDate;
     }
 
-    public void setPublicationDate(Timestamp publicationDate) {
+    public void setPublicationDate(Date publicationDate) {
         this.publicationDate = publicationDate;
     }
 

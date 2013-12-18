@@ -3,6 +3,11 @@
   <persistence-unit name="amasoon" transaction-type="RESOURCE_LOCAL">
     <provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
     <class>org.amasoon.persistence.customer.Customer</class>
+    <class>org.amasoon.persistence.catalog.Book</class>
+    <class>org.amasoon.persistence.customer.Address</class>
+    <class>org.amasoon.persistence.customer.CreditCard</class>
+    <class>org.amasoon.persistence.order.LineItem</class>
+    <class>org.amasoon.persistence.order.Order</class>
     <exclude-unlisted-classes>true</exclude-unlisted-classes>
     <properties>
       <property name="javax.persistence.jdbc.url" value="jdbc:derby://localhost:1527/amasoon"/>
@@ -13,6 +18,7 @@
       <property name="eclipselink.logging.logger" value="JavaLogger"/>
       <property name="eclipselink.logging.level" value="FINE"/>
       <property name="eclipselink.logging.parameters" value="true"/>
+      <property name="eclipselink.ddl-generation" value="create-tables"/>
     </properties>
   </persistence-unit>
 </persistence>
