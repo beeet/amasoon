@@ -3,11 +3,19 @@ package org.amasoon.persistence.catalog;
 import java.math.BigDecimal;
 import java.sql.Date;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
 import org.amasoon.persistence.BaseEntity;
 
 @Entity
 public class Book extends BaseEntity {
 
+    public final static String findByISBN = "Book.findByISBN";
+    public final static String findByKeywords = "Book.findByKeywords";
+
+    @Id
+    @GeneratedValue
+    protected Integer id;
     private String isbn;
     private String title;
     private String authors;
@@ -16,6 +24,10 @@ public class Book extends BaseEntity {
     private String binding;
     private Integer numberOfPages;
     private BigDecimal price;
+
+    public Integer getId() {
+        return id;
+    }
 
     public String getIsbn() {
         return isbn;
