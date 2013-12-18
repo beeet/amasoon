@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<dataset>
-
-    <customer email="franz@amasoon.org" name="Franz Müller" />
-    <customer email="ruedi@amasoon.org" name="Ruedi Meier" />
-    <customer email="kari@amasoon.org" name="Kari Huber" />
-
-</dataset>

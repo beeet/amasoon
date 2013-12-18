@@ -16,6 +16,10 @@ public class CustomerIntTest {
     EntityManager em;
     Customer customer;
 
+    public CustomerIntTest() {
+        super();
+    }
+
     @BeforeTest
     public void setup() {
         emf = Persistence.createEntityManagerFactory("amasoon");

@@ -1,5 +1,6 @@
 package org.amasoon.persistence;
 
+import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -13,10 +14,10 @@ import org.dbunit.database.IDatabaseConnection;
 import org.dbunit.dataset.xml.FlatXmlDataSet;
 import org.dbunit.dataset.xml.FlatXmlDataSetBuilder;
 import org.dbunit.operation.DatabaseOperation;
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
+import org.testng.annotations.AfterClass;
+import org.testng.annotations.AfterTest;
+import org.testng.annotations.BeforeClass;
+import org.testng.annotations.BeforeTest;
 
 public abstract class AbstractIntTestSuite {
 
@@ -27,21 +28,20 @@ public abstract class AbstractIntTestSuite {
     protected static FlatXmlDataSet dataSet;
 
     @BeforeClass
-    public  void setUpDb() throws SQLException, DatabaseUnitException {
+    public void setUpDb() throws SQLException, DatabaseUnitException, FileNotFoundException {
         emf = Persistence.createEntityManagerFactory("amasoon");
         em = emf.createEntityManager();
 
         con = DriverManager.getConnection("jdbc:derby://localhost:1527/amasoon", "app", "app");
         dbConnection = new DatabaseConnection(con);
-
-        InputStream strm = Thread.currentThread().getContextClassLoader().getResourceAsStream("amasoon_data.xml");
+        InputStream strm = AbstractIntTestSuite.class.getClassLoader().getResourceAsStream("test_data.xml");
         FlatXmlDataSetBuilder builder = new FlatXmlDataSetBuilder();
         builder.setColumnSensing(true);
         dataSet = builder.build(strm);
     }
 
     @AfterClass
-    public  void tearDownDb() throws SQLException {
+    public void tearDownDb() throws SQLException {
         if (con != null && !con.isClosed()) {
             con.close();
         }
@@ -53,16 +53,18 @@ public abstract class AbstractIntTestSuite {
         }
     }
 
-    @Before
+    @BeforeTest
     public void insertTestData() throws Exception {
+        setUpDb();
         em.clear();
         emf.getCache().evictAll();
 
         DatabaseOperation.CLEAN_INSERT.execute(dbConnection, dataSet);
     }
 
-    @After
+    @AfterTest
     public void deleteTestData() throws Exception {
         DatabaseOperation.DELETE_ALL.execute(dbConnection, dataSet);
+        tearDownDb();
     }
 }
