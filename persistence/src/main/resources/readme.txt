@@ -25,3 +25,4 @@ zugegriffen wird.
 Wenn ein Customer gelöscht werden soll, hätte man ein Problem mit bestehenden
 Orders. Daher haben wir das Modell erweitert, sodass Customers lediglich als
 gelöscht markiert werden können.
+

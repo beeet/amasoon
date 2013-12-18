@@ -2,6 +2,8 @@ package org.amasoon.persistence.order;
 
 import java.math.BigDecimal;
 import java.sql.Date;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
@@ -32,10 +34,8 @@ public class OrderIntTest {
         emf = Persistence.createEntityManagerFactory("bookstore");
         em = emf.createEntityManager();
         c1 = createCustomer("Ferdi Kübler", "ferdi.kübler@radsport.ch");
-      //  c2 = createCustomer("Godi Schmutz", "godi.schmutz@radsport.ch");
         o1 = createOrder(c1);
         o2 = createOrder(c1);
-//        o3 = createOrder(c2);
         em.getTransaction().begin();
         em.persist(c1);
         em.persist(o1);
@@ -50,8 +50,6 @@ public class OrderIntTest {
         em.remove(em.find(Order.class, o1.getId()));
         em.remove(em.find(Order.class, o2.getId()));
         em.remove(em.find(Customer.class, c1.getId()));
-//        em.remove(em.find(Order.class, o3.getId()));
-//        em.remove(em.find(Customer.class, c2.getId()));
         em.getTransaction().commit();
     }
 
@@ -89,30 +87,30 @@ public class OrderIntTest {
     @Test
     public void placeOrder() {
         //arrange
-//        Customer customer = createCustomer("Beat Breu", "beat.breu@radsport.ch");
-//        Address address = createAddress();
-//        CreditCard creditcard = createCreditcard();
-//        Book book = createBook();
-//
-//        Set<LineItem> lineItems = new HashSet<>();
-//        final LineItem lineItem = new LineItem();
-//        lineItem.setBook(book);
-//        lineItems.add(lineItem);
-//        Order order = createOrder(customer, address, creditcard, lineItems);
-//
-//        //act
-//        em.getTransaction().begin();
-//        em.persist(customer);
-//        em.persist(book);
-//        em.persist(order);
-//        em.getTransaction().commit();
-//
-//        //clean
-//        em.getTransaction().begin();
-//        em.remove(em.find(Customer.class, customer.getId()));
-//        em.remove(em.find(Order.class, order.getId()));
-//        em.remove(em.find(Book.class, book.getId()));
-//        em.getTransaction().commit();
+        Customer customer = createCustomer("Beat Breu", "beat.breu@radsport.ch");
+        Address address = createAddress();
+        CreditCard creditcard = createCreditcard();
+        Book book = createBook();
+
+        Set<LineItem> lineItems = new HashSet<>();
+        final LineItem lineItem = new LineItem();
+        lineItem.setBook(book);
+        lineItems.add(lineItem);
+        Order order = createOrder(customer, address, creditcard, lineItems);
+
+        //act
+        em.getTransaction().begin();
+        em.persist(customer);
+        em.persist(book);
+        em.persist(order);
+        em.getTransaction().commit();
+
+        //clean
+        em.getTransaction().begin();
+        em.remove(em.find(Customer.class, customer.getId()));
+        em.remove(em.find(Order.class, order.getId()));
+        em.remove(em.find(Book.class, book.getId()));
+        em.getTransaction().commit();
     }
 
     private Order createOrder(Customer customer) {
