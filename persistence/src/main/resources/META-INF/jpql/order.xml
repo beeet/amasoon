@@ -9,4 +9,10 @@
             SELECT o FROM Order o WHERE o.orderNumber = :orderNumber
         </query>
     </named-query>
+    
+    <named-query name="Order.findByCustomer">
+        <query>
+            SELECT o FROM Order o WHERE o.customer = :customer
+        </query>
+    </named-query>
 </entity-mappings>

@@ -21,12 +21,15 @@ import org.amasoon.persistence.customer.Customer;
 @Entity
 @Table(name = "ORDERS")
 public class Order extends BaseEntity {
+
     public static final String FIND_BY_NUMBER = "Order.findByNumber";
+    public static final String FIND_BY_CUSTOMER = "Order.findByCustomer";
+
     public enum Status {
 
         open, closed, canceled
     }
-    
+
     private String orderNumber;
     private Date orderDate;
     private BigDecimal amount;
