@@ -9,9 +9,4 @@
             SELECT b FROM Book b WHERE b.isbn = :isbn
         </query>
     </named-query>
-    <named-query name="Book.findByKeywords">
-        <query>
-            SELECT b FROM Book b
-        </query>
-    </named-query>
 </entity-mappings>
