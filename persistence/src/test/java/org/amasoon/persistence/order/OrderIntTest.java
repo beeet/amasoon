@@ -7,6 +7,7 @@ import java.util.Set;
 import java.util.UUID;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
+import javax.persistence.NoResultException;
 import javax.persistence.Persistence;
 import javax.persistence.TypedQuery;
 import org.amasoon.persistence.catalog.Book;
@@ -62,12 +63,12 @@ public class OrderIntTest {
         assertEquals(o1, actual);
     }
 
-//    @Test(expectedExceptions = NoResultException.class)
-//    public void findByNumber_NumberNotExist() {
-//        TypedQuery<Order> query = em.createNamedQuery(Order.FIND_BY_NUMBER, Order.class);
-//        query.setParameter("orderNumber", "123");
-//        query.getSingleResult();
-//    }
+    @Test(expectedExceptions = NoResultException.class)
+    public void findByNumber_NumberNotExist() {
+        TypedQuery<Order> query = em.createNamedQuery(Order.FIND_BY_NUMBER, Order.class);
+        query.setParameter("orderNumber", "123");
+        query.getSingleResult();
+    }
 
     @Test
     public void findByCustomer() {
