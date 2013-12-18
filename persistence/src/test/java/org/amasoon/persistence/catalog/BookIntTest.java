@@ -93,29 +93,25 @@ public class BookIntTest {
         // find title
         List<String> keywords = Arrays.asList("Java", "in");
         Query q = em.createQuery(BookQueries.findByKeywords(em, keywords));
-        List<Object[]> results = q.getResultList();
         List<Book> books = q.getResultList();
-        assertEquals(results.size(), 2);
+        assertEquals(books.size(), 2);
 
         // find author
         keywords = Arrays.asList("Donald", "Mark", "Jeff");
         q = em.createQuery(BookQueries.findByKeywords(em, keywords));
-        results = q.getResultList();
         books = q.getResultList();
-        assertEquals(results.size(), 1);
+        assertEquals(books.size(), 1);
 
         // find publisher
         keywords = Arrays.asList("Apress", "pTr");
         q = em.createQuery(BookQueries.findByKeywords(em, keywords));
-        results = q.getResultList();
         books = q.getResultList();
-        assertEquals(results.size(), 1);
+        assertEquals(books.size(), 1);
 
         // find misc
         keywords = Arrays.asList("4th Edition", "jeff");
         q = em.createQuery(BookQueries.findByKeywords(em, keywords));
-        results = q.getResultList();
         books = q.getResultList();
-        assertEquals(results.size(), 2);
+        assertEquals(books.size(), 2);
     }
 }

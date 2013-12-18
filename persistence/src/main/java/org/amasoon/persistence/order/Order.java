@@ -41,7 +41,7 @@ public class Order extends BaseEntity {
     private Address address;
     @OneToOne(optional = false, fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private CreditCard creditCard;
-    @OneToMany
+    @OneToMany(cascade = CascadeType.ALL)
     private Set<LineItem> lineItems = new HashSet<>();
 
     public Address getAddress() {
