@@ -1,7 +1,10 @@
 package org.amasoon.persistence.catalog;
 
+import java.math.BigDecimal;
+import java.sql.Date;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Calendar;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
@@ -66,6 +69,12 @@ public class BookIntTest {
         book1.setTitle("Thinking in Java (4th Edition)");
         book1.setAuthors("Bruce Eckel");
         book1.setPublisher("Prentice Hall PTR");
+        book1.setBinding("Paperback");
+        book1.setNumberOfPages(1150);
+        book1.setPrice(BigDecimal.valueOf(64, 99));
+        Calendar c = Calendar.getInstance();
+        c.set(2006, 02, 02);
+        book1.setPublicationDate(new Date(c.getTimeInMillis()));
         em.persist(book1);
         Book book2 = new Book();
         book2.setIsbn("0471777102");
@@ -86,6 +95,13 @@ public class BookIntTest {
 
         assertNotNull(book);
         assertEquals("Thinking in Java (4th Edition)", book.getTitle());
+        assertEquals("Bruce Eckel", book.getAuthors());
+        assertEquals("Paperback", book.getBinding());
+        assertEquals("0131872486", book.getIsbn());
+        assertEquals(new Integer("1150"), book.getNumberOfPages());
+        assertEquals(BigDecimal.valueOf(64, 99), book.getPrice());
+        assertEquals("2006-03-02", book.getPublicationDate().toString());
+        assertEquals("Prentice Hall PTR", book.getPublisher());
     }
 
     @Test
