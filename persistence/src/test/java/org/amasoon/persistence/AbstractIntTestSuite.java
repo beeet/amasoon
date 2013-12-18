@@ -29,10 +29,10 @@ public abstract class AbstractIntTestSuite {
 
     @BeforeClass
     public void setUpDb() throws SQLException, DatabaseUnitException, FileNotFoundException {
-        emf = Persistence.createEntityManagerFactory("amasoon");
+        emf = Persistence.createEntityManagerFactory("bookstore");
         em = emf.createEntityManager();
 
-        con = DriverManager.getConnection("jdbc:derby://localhost:1527/amasoon", "app", "app");
+        con = DriverManager.getConnection("jdbc:derby://localhost:1527/bookstore", "app", "app");
         dbConnection = new DatabaseConnection(con);
         InputStream strm = AbstractIntTestSuite.class.getClassLoader().getResourceAsStream("test_data.xml");
         FlatXmlDataSetBuilder builder = new FlatXmlDataSetBuilder();

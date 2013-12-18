@@ -18,7 +18,7 @@ public class CustomerIntTest {
 
     @BeforeTest
     public void setup() {
-        emf = Persistence.createEntityManagerFactory("amasoon");
+        emf = Persistence.createEntityManagerFactory("bookstore");
         em = emf.createEntityManager();
         createCustomer();
     }

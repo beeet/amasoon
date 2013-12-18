@@ -28,7 +28,7 @@ public class BookQueriesTest {
     @BeforeTest
     public void setUp() {
         try {
-            emf = Persistence.createEntityManagerFactory("amasoon");
+            emf = Persistence.createEntityManagerFactory("bookstore");
             em = emf.createEntityManager();
             em.getTransaction().begin();
             insertBooks();
