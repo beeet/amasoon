@@ -1,16 +1,11 @@
 package org.amasoon.persistence.catalog;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import javax.persistence.Query;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertNotNull;
 import org.testng.annotations.AfterTest;
@@ -97,46 +92,30 @@ public class BookIntTest {
     public void findByKeywords() {
         // find title
         List<String> keywords = Arrays.asList("Java", "in");
-        Query q = em.createQuery(getCriteriaQuery(keywords));
+        Query q = em.createQuery(BookQueries.findByKeywords(em, keywords));
         List<Object[]> results = q.getResultList();
         List<Book> books = q.getResultList();
         assertEquals(results.size(), 2);
 
         // find author
         keywords = Arrays.asList("Donald", "Mark", "Jeff");
-        q = em.createQuery(getCriteriaQuery(keywords));
+        q = em.createQuery(BookQueries.findByKeywords(em, keywords));
         results = q.getResultList();
         books = q.getResultList();
         assertEquals(results.size(), 1);
 
         // find publisher
         keywords = Arrays.asList("Apress", "pTr");
-        q = em.createQuery(getCriteriaQuery(keywords));
+        q = em.createQuery(BookQueries.findByKeywords(em, keywords));
         results = q.getResultList();
         books = q.getResultList();
         assertEquals(results.size(), 1);
 
         // find misc
         keywords = Arrays.asList("4th Edition", "jeff");
-        q = em.createQuery(getCriteriaQuery(keywords));
+        q = em.createQuery(BookQueries.findByKeywords(em, keywords));
         results = q.getResultList();
         books = q.getResultList();
         assertEquals(results.size(), 2);
     }
-
-    private CriteriaQuery<Book> getCriteriaQuery(List<String> keywords) {
-        CriteriaBuilder cb = em.getCriteriaBuilder();
-        CriteriaQuery<Book> cq = cb.createQuery(Book.class);
-        Root<Book> book = cq.from(Book.class);
-        cq.distinct(true);
-        List<Predicate> predicates = new ArrayList<>();
-        for (String keyword : keywords) {
-            predicates.add(cb.like(cb.lower(book.<String>get("title")), "%" + keyword.toLowerCase() + "%"));
-            predicates.add(cb.like(cb.lower(book.<String>get("authors")), "%" + keyword.toLowerCase() + "%"));
-            predicates.add(cb.like(cb.lower(book.<String>get("publisher")), "%" + keyword.toLowerCase() + "%"));
-        }
-        cq.where(cb.or(predicates.toArray(new Predicate[predicates.size()])));
-        return cq;
-    }
-
 }
