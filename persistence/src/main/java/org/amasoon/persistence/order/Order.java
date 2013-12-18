@@ -12,14 +12,16 @@ import javax.persistence.FetchType;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
+import javax.persistence.Table;
 import org.amasoon.persistence.BaseEntity;
 import org.amasoon.persistence.customer.Address;
 import org.amasoon.persistence.customer.CreditCard;
 import org.amasoon.persistence.customer.Customer;
 
-@Entity(name = "ORDERS")
+@Entity
+@Table(name = "ORDERS")
 public class Order extends BaseEntity {
-
+    public static final String FIND_BY_NUMBER = "Order.findByNumber";
     public enum Status {
 
         open, closed, canceled

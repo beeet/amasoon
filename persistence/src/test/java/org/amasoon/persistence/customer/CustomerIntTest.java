@@ -16,26 +16,26 @@ public class CustomerIntTest {
     EntityManager em;
     Customer customer;
 
-    public CustomerIntTest() {
-        super();
-    }
-
     @BeforeTest
     public void setup() {
         emf = Persistence.createEntityManagerFactory("amasoon");
         em = emf.createEntityManager();
-        em.getTransaction().begin();
-        customer = new Customer();
-        customer.setEmail("ueli@bundesrat.ch");
-        customer.setName("Ueli Maurer");
-        em.persist(customer);
-        em.getTransaction().commit();
+        createCustomer();
     }
 
     @AfterTest
     public void tearDown() {
         em.getTransaction().begin();
         em.remove(customer);
+        em.getTransaction().commit();
+    }
+
+    private void createCustomer() {
+        em.getTransaction().begin();
+        customer = new Customer();
+        customer.setEmail("ueli@bundesrat.ch");
+        customer.setName("Ueli Maurer");
+        em.persist(customer);
         em.getTransaction().commit();
     }
 

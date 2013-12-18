@@ -21,6 +21,7 @@
             <property name="eclipselink.ddl-generation" value="create-tables"/>
         </properties>
         <mapping-file>META-INF/jpql/customer.xml</mapping-file>
+        <mapping-file>META-INF/jpql/order.xml</mapping-file>
         <mapping-file>META-INF/jpql/book.xml</mapping-file>
     </persistence-unit>
 </persistence>
