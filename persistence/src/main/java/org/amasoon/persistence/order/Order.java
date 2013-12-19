@@ -5,13 +5,13 @@ import java.sql.Date;
 import java.util.HashSet;
 import java.util.Set;
 import javax.persistence.CascadeType;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import org.amasoon.persistence.BaseEntity;
 import org.amasoon.persistence.customer.Address;
@@ -37,9 +37,9 @@ public class Order extends BaseEntity {
     private Status status;
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
     private Customer customer;
-    @OneToOne(optional = false, fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @Embedded
     private Address address;
-    @OneToOne(optional = false, fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @Embedded
     private CreditCard creditCard;
     @OneToMany(cascade = CascadeType.ALL)
     private Set<LineItem> lineItems = new HashSet<>();

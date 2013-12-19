@@ -1,9 +1,7 @@
 package org.amasoon.persistence.customer;
 
-import javax.persistence.CascadeType;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.NotNull;
@@ -12,13 +10,14 @@ import org.amasoon.persistence.BaseEntity;
 @Entity
 @Table(uniqueConstraints = @UniqueConstraint(columnNames = {"email"}))
 public class Customer extends BaseEntity {
+
     public static final String FIND_BY_EMAIL = "Customer.findByEmail";
     @NotNull
     private String email;
     private String name;
-    @OneToOne(optional = false, fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @Embedded
     private Address address;
-    @OneToOne(optional = false, fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @Embedded
     private CreditCard creditCard;
 
     public Address getAddress() {

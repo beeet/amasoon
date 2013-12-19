@@ -40,7 +40,6 @@ public class OrderIntTest {
         em.persist(o1);
         em.persist(o2);
         em.getTransaction().commit();
-
     }
 
     @AfterTest
@@ -118,6 +117,8 @@ public class OrderIntTest {
         order.setAmount(BigDecimal.TEN);
         order.setOrderNumber(UUID.randomUUID().toString());
         order.setCustomer(customer);
+        order.setAddress(new Address());
+        order.setCreditCard(new CreditCard());
         return order;
     }
 
@@ -125,6 +126,8 @@ public class OrderIntTest {
         Customer customer = new Customer();
         customer.setEmail(email);
         customer.setName(name);
+        customer.setAddress(new Address());
+        customer.setCreditCard(new CreditCard());
         return customer;
     }
 

@@ -1,10 +1,9 @@
 package org.amasoon.persistence.customer;
 
-import javax.persistence.Entity;
-import org.amasoon.persistence.BaseEntity;
+import javax.persistence.Embeddable;
 
-@Entity
-public class Address extends BaseEntity {
+@Embeddable
+public class Address {
 
     private String street;
     private String city;

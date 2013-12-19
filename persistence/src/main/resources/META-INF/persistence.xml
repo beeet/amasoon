@@ -4,8 +4,6 @@
         <provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
         <class>org.amasoon.persistence.customer.Customer</class>
         <class>org.amasoon.persistence.catalog.Book</class>
-        <class>org.amasoon.persistence.customer.Address</class>
-        <class>org.amasoon.persistence.customer.CreditCard</class>
         <class>org.amasoon.persistence.order.LineItem</class>
         <class>org.amasoon.persistence.order.Order</class>
         <exclude-unlisted-classes>true</exclude-unlisted-classes>

@@ -1,13 +1,12 @@
 package org.amasoon.persistence.customer;
 
 import java.sql.Date;
-import javax.persistence.Entity;
+import javax.persistence.Embeddable;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
-import org.amasoon.persistence.BaseEntity;
 
-@Entity
-public class CreditCard extends BaseEntity {
+@Embeddable
+public class CreditCard {
 
     public enum Type {
 
