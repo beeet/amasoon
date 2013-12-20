@@ -1,5 +1,6 @@
 package org.amasoon.persistence.customer;
 
+import java.sql.Date;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.NoResultException;
@@ -20,22 +21,18 @@ public class CustomerIntTest {
     public void setup() {
         emf = Persistence.createEntityManagerFactory("bookstore");
         em = emf.createEntityManager();
-        createCustomer();
+        em.getTransaction().begin();
+        customer = new Customer();
+        customer.setEmail("ueli@bundesrat.ch");
+        customer.setName("Ueli Maurer");
+        em.persist(customer);
+        em.getTransaction().commit();
     }
 
     @AfterTest
     public void tearDown() {
         em.getTransaction().begin();
         em.remove(customer);
-        em.getTransaction().commit();
-    }
-
-    private void createCustomer() {
-        em.getTransaction().begin();
-        customer = new Customer();
-        customer.setEmail("ueli@bundesrat.ch");
-        customer.setName("Ueli Maurer");
-        em.persist(customer);
         em.getTransaction().commit();
     }
 
@@ -52,6 +49,44 @@ public class CustomerIntTest {
         TypedQuery<Customer> query = em.createNamedQuery(Customer.FIND_BY_EMAIL, Customer.class);
         query.setParameter("email", "not@exist.ch");
         query.getSingleResult();
+    }
+
+    @Test
+    public void creationOfCustomer() {
+        Customer cus = createCustomer(createAddress(), createCreditcard());
+        em.getTransaction().begin();
+        em.persist(cus);
+        em.getTransaction().commit();
+
+        em.getTransaction().begin();
+        em.remove(cus);
+        em.getTransaction().commit();
+    }
+
+    private Customer createCustomer(Address address, CreditCard creditcard) {
+        Customer cus = new Customer();
+        cus.setEmail("eee@mail.ch");
+        cus.setName("Tester Test");
+        cus.setAddress(address);
+        cus.setCreditCard(creditcard);
+        return cus;
+    }
+
+    private CreditCard createCreditcard() {
+        CreditCard creditcard = new CreditCard();
+        creditcard.setType(CreditCard.Type.MasterCard);
+        creditcard.setNumber("5411222233334445");
+        creditcard.setExpirationDate(new Date(System.currentTimeMillis()));
+        return creditcard;
+    }
+
+    private Address createAddress() {
+        Address address = new Address();
+        address.setStreet("Zu Hause 5");
+        address.setZipCode("1234");
+        address.setCity("Musterdorf");
+        address.setCountry("Schweiz");
+        return address;
     }
 
 }
