@@ -16,8 +16,10 @@ public class Customer extends BaseEntity {
     private String email;
     private String name;
     @Embedded
+    @NotNull
     private Address address;
     @Embedded
+    @NotNull
     private CreditCard creditCard;
 
     public Address getAddress() {

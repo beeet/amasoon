@@ -13,6 +13,7 @@ import javax.persistence.FetchType;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
 import org.amasoon.persistence.BaseEntity;
 import org.amasoon.persistence.customer.Address;
 import org.amasoon.persistence.customer.CreditCard;
@@ -38,7 +39,9 @@ public class Order extends BaseEntity {
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
     private Customer customer;
     @Embedded
+    @NotNull
     private Address address;
+    @NotNull
     @Embedded
     private CreditCard creditCard;
     @OneToMany(cascade = CascadeType.ALL)

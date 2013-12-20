@@ -25,6 +25,8 @@ public class CustomerIntTest {
         customer = new Customer();
         customer.setEmail("ueli@bundesrat.ch");
         customer.setName("Ueli Maurer");
+        customer.setAddress(createAddress());
+        customer.setCreditCard(createCreditcard());
         em.persist(customer);
         em.getTransaction().commit();
     }
