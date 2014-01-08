@@ -1,6 +1,6 @@
 package org.books.persistence.catalog;
 
-import org.books.persistence.catalog.BookQueries;
+import org.books.persistence.catalog.BookQueryFactory;
 import org.books.persistence.catalog.Book;
 import java.math.BigDecimal;
 import java.sql.Date;
@@ -110,25 +110,25 @@ public class BookIntTest {
     public void findByKeywords() {
         // find title
         List<String> keywords = Arrays.asList("Java", "in");
-        Query q = em.createQuery(BookQueries.findByKeywords(em, keywords));
+        Query q = em.createQuery(BookQueryFactory.findByKeywords(em, keywords));
         List<Book> books = q.getResultList();
         assertEquals(books.size(), 2);
 
         // find author
         keywords = Arrays.asList("Donald", "Mark", "Jeff");
-        q = em.createQuery(BookQueries.findByKeywords(em, keywords));
+        q = em.createQuery(BookQueryFactory.findByKeywords(em, keywords));
         books = q.getResultList();
         assertEquals(books.size(), 1);
 
         // find publisher
         keywords = Arrays.asList("Apress", "pTr");
-        q = em.createQuery(BookQueries.findByKeywords(em, keywords));
+        q = em.createQuery(BookQueryFactory.findByKeywords(em, keywords));
         books = q.getResultList();
         assertEquals(books.size(), 1);
 
         // find misc
         keywords = Arrays.asList("4th Edition", "jeff");
-        q = em.createQuery(BookQueries.findByKeywords(em, keywords));
+        q = em.createQuery(BookQueryFactory.findByKeywords(em, keywords));
         books = q.getResultList();
         assertEquals(books.size(), 2);
     }
