@@ -1,4 +1,4 @@
-package org.amasoon.persistence.customer;
+package org.books.persistence.customer;
 
 import org.books.persistence.customer.CreditCard;
 import org.books.persistence.customer.Customer;

@@ -1,4 +1,4 @@
-package org.amasoon.persistence.order;
+package org.books.persistence.order;
 
 import org.book.persistence.order.Order;
 import org.book.persistence.order.LineItem;

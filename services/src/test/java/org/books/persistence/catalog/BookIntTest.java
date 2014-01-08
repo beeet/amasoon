@@ -1,4 +1,4 @@
-package org.amasoon.persistence.catalog;
+package org.books.persistence.catalog;
 
 import org.books.persistence.catalog.BookQueries;
 import org.books.persistence.catalog.Book;
