@@ -1,7 +1,5 @@
 package org.books.persistence.order;
 
-import org.book.persistence.order.Order;
-import org.book.persistence.order.LineItem;
 import java.math.BigDecimal;
 import java.sql.Date;
 import java.util.HashSet;

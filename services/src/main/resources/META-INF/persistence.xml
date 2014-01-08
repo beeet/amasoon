@@ -2,10 +2,10 @@
 <persistence version="2.1" xmlns="http://xmlns.jcp.org/xml/ns/persistence" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence http://xmlns.jcp.org/xml/ns/persistence/persistence_2_1.xsd">
   <persistence-unit name="bookstore" transaction-type="RESOURCE_LOCAL">
     <provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
-    <class>org.book.persistence.order.LineItem</class>
-    <class>org.book.persistence.order.Order</class>
     <class>org.books.persistence.customer.Customer</class>
     <class>org.books.persistence.catalog.Book</class>
+    <class>org.books.persistence.order.LineItem</class>
+    <class>org.books.persistence.order.Order</class>
     <exclude-unlisted-classes>true</exclude-unlisted-classes>
     <properties>
       <property name="javax.persistence.jdbc.url" value="jdbc:derby://localhost:1527/bookstore"/>

@@ -1,4 +1,4 @@
-package org.book.persistence.order;
+package org.books.persistence.order;
 
 import java.math.BigDecimal;
 import java.sql.Date;
