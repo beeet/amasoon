@@ -8,7 +8,7 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
-public class BookQueries {
+public class BookQueryFactory {
 
     public static CriteriaQuery<Book> findByKeywords(EntityManager em, List<String> keywords) {
         CriteriaBuilder cb = em.getCriteriaBuilder();

@@ -1,25 +1,39 @@
 package org.books.service.catalog;
 
+import java.util.Arrays;
 import java.util.List;
 import javax.ejb.Stateless;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.PersistenceContextType;
+import javax.persistence.TypedQuery;
+import javax.persistence.criteria.CriteriaQuery;
 import org.books.persistence.catalog.Book;
+import org.books.persistence.catalog.BookQueryFactory;
 
-@Stateless
-public class CatalogServiceBean implements CatalogService{
+@Stateless(name = "CatalogService")
+public class CatalogServiceBean implements CatalogService {
+
+    @PersistenceContext(type = PersistenceContextType.EXTENDED)
+    EntityManager em;
 
     @Override
     public void addBook(Book book) throws BookAlreadyExistsException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        em.persist(em.merge(book));///TODO wrap exception
     }
 
     @Override
     public Book findBook(String isbn) throws BookNotFoundException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        TypedQuery<Book> query = em.createNamedQuery("Book.findByISBN", Book.class);
+        query.setParameter("isbn", isbn);
+        return query.getSingleResult();//TODO SB exception??? wenn nichts gefunden > wrappen
     }
 
     @Override
     public List<Book> searchBooks(String... keywords) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        CriteriaQuery<Book> expr = BookQueryFactory.findByKeywords(em, Arrays.asList(keywords));
+        TypedQuery<Book> query = em.createQuery(expr);
+        return query.getResultList();
     }
 
 }
