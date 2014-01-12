@@ -26,7 +26,11 @@ public class CatalogServiceBean implements CatalogService {
     public Book findBook(String isbn) throws BookNotFoundException {
         TypedQuery<Book> query = em.createNamedQuery("Book.findByISBN", Book.class);
         query.setParameter("isbn", isbn);
-        return query.getSingleResult();//TODO SB exception??? wenn nichts gefunden > wrappen
+        Book book = query.getSingleResult();
+        if (null == book) {
+            throw new BookNotFoundException();
+        }
+        return book;
     }
 
     @Override
