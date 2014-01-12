@@ -37,6 +37,7 @@ public class CustomerServiceBean implements CustomerService {
 
     @Override
     public void updateCustomer(Customer customer) {
+        entityManager.persist(entityManager.merge(customer));
     }
 
 }
