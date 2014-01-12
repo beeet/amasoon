@@ -19,7 +19,7 @@ import org.books.persistence.order.LineItem;
 import org.books.persistence.order.Order;
 import org.books.persistence.order.Order.Status;
 
-@Stateless
+@Stateless(name = "OrderService")
 public class OrderServiceBean implements OrderService {
 
     @PersistenceContext(type = PersistenceContextType.EXTENDED)

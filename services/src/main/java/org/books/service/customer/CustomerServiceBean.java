@@ -12,21 +12,21 @@ import org.books.persistence.customer.Customer;
 public class CustomerServiceBean implements CustomerService {
 
     @PersistenceContext(type = EXTENDED)
-    private EntityManager entityManager;
+    private EntityManager em;
 
     @Override
     public void addCustomer(Customer customer) throws CustomerAlreadyExistsException {
-        Customer existingCustomer = entityManager.find(Customer.class, customer.getId());
+        Customer existingCustomer = em.find(Customer.class, customer.getId());
         if (existingCustomer != null) {
             throw new CustomerAlreadyExistsException();
         } else {
-            entityManager.persist(entityManager.merge(customer));
+            em.persist(em.merge(customer));
         }
     }
 
     @Override
     public Customer findCustomer(String email) throws CustomerNotFoundException {
-        TypedQuery<Customer> query = entityManager.createNamedQuery(Customer.FIND_BY_EMAIL, Customer.class);
+        TypedQuery<Customer> query = em.createNamedQuery(Customer.FIND_BY_EMAIL, Customer.class);
         query.setParameter("email", email);
         try {
             return query.getSingleResult();
@@ -37,7 +37,7 @@ public class CustomerServiceBean implements CustomerService {
 
     @Override
     public void updateCustomer(Customer customer) {
-        entityManager.persist(entityManager.merge(customer));
+        em.persist(em.merge(customer));
     }
 
 }
