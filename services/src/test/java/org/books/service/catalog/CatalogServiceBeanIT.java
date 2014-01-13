@@ -8,7 +8,7 @@ import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
-public class CatalogServiceBeanIntTest {
+public class CatalogServiceBeanIT {
 
     private static final String JNDI_NAME = "java:global/services/CatalogService";
     private CatalogService catalogService;

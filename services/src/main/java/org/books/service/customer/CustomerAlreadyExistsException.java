@@ -1,5 +1,5 @@
 package org.books.service.customer;
 
-class CustomerAlreadyExistsException extends Exception {
+public class CustomerAlreadyExistsException extends Exception {
 
 }

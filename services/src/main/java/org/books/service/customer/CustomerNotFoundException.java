@@ -1,6 +1,6 @@
 package org.books.service.customer;
 
-class CustomerNotFoundException extends Exception {
+public class CustomerNotFoundException extends Exception {
 
     public CustomerNotFoundException() {
 
