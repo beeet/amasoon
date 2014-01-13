@@ -16,7 +16,10 @@ public class CustomerServiceBean implements CustomerService {
 
     @Override
     public void addCustomer(Customer customer) throws CustomerAlreadyExistsException {
-        Customer existingCustomer = em.find(Customer.class, customer.getId());
+        Customer existingCustomer = null;
+        if (customer.getId() != null) {
+            existingCustomer = em.find(Customer.class, customer.getId());
+        }
         if (existingCustomer != null) {
             throw new CustomerAlreadyExistsException();
         } else {

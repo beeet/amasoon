@@ -1,6 +1,8 @@
 package org.books.service.customer;
 
 import java.sql.Date;
+import java.util.Random;
+import javax.ejb.EJBException;
 import javax.naming.InitialContext;
 import org.books.persistence.customer.Address;
 import org.books.persistence.customer.CreditCard;
@@ -13,6 +15,7 @@ public class CustomerServiceBeanIT {
 
     private static final String JNDI_NAME = "java:global/services/CustomerService";
     private CustomerService customerService;
+    private Customer customer;
 
     @BeforeClass
     public void init() throws Exception {
@@ -21,45 +24,60 @@ public class CustomerServiceBeanIT {
 
     @Test
     public void addCustomer() throws CustomerAlreadyExistsException {
-        customerService.addCustomer(createCustomer());
-    }
-
-    @Test(expectedExceptions = CustomerAlreadyExistsException.class)
-    public void addCustomer_CustomerAlreadyExistsException() throws Exception {
-        Customer newCustomer = createCustomer();
-        customerService.addCustomer(newCustomer);
-        customerService.addCustomer(newCustomer);
-    }
-
-    @Test
-    public void findCustomer() throws CustomerAlreadyExistsException, CustomerNotFoundException {
-        Customer newCustomer = createCustomer();
-        customerService.addCustomer(newCustomer);
-        customerService.findCustomer(newCustomer.getEmail());
-    }
-
-    @Test
-    public void findCustomer_CustomerNotFoundException() throws CustomerAlreadyExistsException, CustomerNotFoundException {
-        Customer newCustomer = createCustomer();
-        customerService.addCustomer(newCustomer);
-        customerService.findCustomer("notexisting@address.com");
-    }
-
-    @Test
-    public void updateCustomer() throws CustomerAlreadyExistsException, CustomerNotFoundException {
-        Customer customer = createCustomer();
+        customer = createCustomer();
         customerService.addCustomer(customer);
-        customer.setName("Updated Customer");
-        customerService.updateCustomer(customer);
-        Customer updatedCustomer = customerService.findCustomer("email@address.com");
+    }
+
+    @Test(dependsOnMethods = "addCustomer")
+    public void findCustomer() throws CustomerAlreadyExistsException, CustomerNotFoundException {
+        Customer foundCustomer = customerService.findCustomer(customer.getEmail());
+        Assert.assertEquals(foundCustomer.getName(), customer.getName());
+        Assert.assertEquals(foundCustomer.getEmail(), customer.getEmail());
+    }
+
+    @Test(expectedExceptions = CustomerAlreadyExistsException.class, dependsOnMethods = "findCustomer")
+    public void addCustomer_CustomerAlreadyExistsException() throws Throwable {
+        Customer foundCustomer = customerService.findCustomer(customer.getEmail());
+        try {
+            customerService.addCustomer(foundCustomer);
+        } catch (EJBException ejbException) {
+            throw ejbException.getCause();
+        }
+    }
+
+    @Test(expectedExceptions = CustomerNotFoundException.class)
+    public void findCustomer_CustomerNotFoundException() throws CustomerAlreadyExistsException, CustomerNotFoundException, Throwable {
+        try {
+            customerService.findCustomer("notexisting@address.com");
+        } catch (EJBException ejbException) {
+            throw ejbException.getCause();
+        }
+    }
+
+    @Test(dependsOnMethods = "findCustomer")
+    public void updateCustomer() throws CustomerAlreadyExistsException, CustomerNotFoundException {
+        // arrange
+        Customer foundCustomer = customerService.findCustomer(customer.getEmail());
+
+        // act
+        foundCustomer.setName("Updated Customer");
+        foundCustomer.getAddress().setCountry("USA");
+        foundCustomer.getCreditCard().setType(CreditCard.Type.Visa);
+        customerService.updateCustomer(foundCustomer);
+
+        // assert
+        Customer updatedCustomer = customerService.findCustomer(customer.getEmail());
         Assert.assertEquals("Updated Customer", updatedCustomer.getName());
+        Assert.assertEquals("USA", updatedCustomer.getAddress().getCountry());
+        Assert.assertEquals(CreditCard.Type.Visa, updatedCustomer.getCreditCard().getType());
     }
 
     private Customer createCustomer() {
+        Random randomGenerator = new Random();
         Customer newCustomer = new Customer();
         newCustomer.setAddress(createAddress());
         newCustomer.setCreditCard(createCreditcard());
-        newCustomer.setEmail("email@address.com");
+        newCustomer.setEmail(randomGenerator.nextInt(10000000) + "@address.com");
         newCustomer.setName("New Customer");
         return newCustomer;
     }
