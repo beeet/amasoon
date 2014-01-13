@@ -14,7 +14,7 @@ import org.testng.annotations.AfterTest;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
 
-public class CustomerIntTest {
+public class CustomerIT {
 
     EntityManagerFactory emf;
     EntityManager em;

@@ -20,7 +20,7 @@ import org.testng.annotations.AfterTest;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
 
-public class OrderIntTest {
+public class OrderIT {
 
     EntityManagerFactory emf;
     EntityManager em;

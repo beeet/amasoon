@@ -17,7 +17,7 @@ import org.testng.annotations.AfterTest;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
 
-public class BookIntTest {
+public class BookIT {
 
     private static EntityManagerFactory emf;
     private static EntityManager em;
