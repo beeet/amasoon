@@ -1,7 +1,9 @@
 package org.books.persistence.customer;
 
+import java.io.Serializable;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
+import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.NotNull;
@@ -9,7 +11,8 @@ import org.books.persistence.BaseEntity;
 
 @Entity
 @Table(uniqueConstraints = @UniqueConstraint(columnNames = {"email"}))
-public class Customer extends BaseEntity {
+@NamedQuery(name = "Customer.findByEmail", query = "SELECT c FROM Customer c WHERE c.email = :email")
+public class Customer extends BaseEntity implements Serializable {
 
     public static final String FIND_BY_EMAIL = "Customer.findByEmail";
     @NotNull

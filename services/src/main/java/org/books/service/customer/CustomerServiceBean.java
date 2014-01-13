@@ -11,7 +11,7 @@ import org.books.persistence.customer.Customer;
 @Stateless(name = "CustomerService")
 public class CustomerServiceBean implements CustomerService {
 
-    @PersistenceContext(type = EXTENDED)
+    @PersistenceContext
     private EntityManager em;
 
     @Override

@@ -22,7 +22,7 @@ import org.books.persistence.order.Order.Status;
 @Stateless(name = "OrderService")
 public class OrderServiceBean implements OrderService {
 
-    @PersistenceContext(type = PersistenceContextType.EXTENDED)
+    @PersistenceContext
     EntityManager em;
 
     @Override

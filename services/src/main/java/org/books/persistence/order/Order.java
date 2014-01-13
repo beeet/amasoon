@@ -11,6 +11,8 @@ import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
@@ -21,6 +23,11 @@ import org.books.persistence.customer.Customer;
 
 @Entity
 @Table(name = "ORDERS")
+@NamedQueries({
+    @NamedQuery(name = "Order.findByNumber",
+            query = "SELECT o FROM Order o WHERE o.orderNumber = :orderNumber"),
+    @NamedQuery(name = "Order.findByCustomer",
+            query = "SELECT o FROM Order o WHERE o.customer = :customer"),})
 public class Order extends BaseEntity {
 
     public static final String FIND_BY_NUMBER = "Order.findByNumber";

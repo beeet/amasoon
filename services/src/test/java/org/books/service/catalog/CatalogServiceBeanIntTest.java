@@ -90,5 +90,4 @@ public class CatalogServiceBeanIntTest {
         book.setPublisher("Apress");
         return book;
     }
-
 }

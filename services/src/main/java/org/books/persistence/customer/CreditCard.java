@@ -1,14 +1,15 @@
 package org.books.persistence.customer;
 
+import java.io.Serializable;
 import java.sql.Date;
 import javax.persistence.Embeddable;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 
 @Embeddable
-public class CreditCard {
+public class CreditCard implements Serializable {
 
-    public enum Type {
+    public enum Type implements Serializable {
 
         MasterCard, Visa
     }

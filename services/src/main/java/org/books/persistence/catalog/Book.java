@@ -5,9 +5,11 @@ import java.sql.Date;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.NamedQuery;
 import org.books.persistence.BaseEntity;
 
 @Entity
+@NamedQuery(name = "Book.findByISBN", query = "SELECT b FROM Book b WHERE b.isbn = :isbn")
 public class Book extends BaseEntity {
 
     public final static String findByISBN = "Book.findByISBN";

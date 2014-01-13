@@ -1,5 +1,5 @@
 package org.books.service.catalog;
 
-class BookAlreadyExistsException extends Exception {
-    
+public class BookAlreadyExistsException extends Exception {
+
 }

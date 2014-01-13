@@ -14,7 +14,7 @@ import org.books.persistence.catalog.BookQueryFactory;
 @Stateless(name = "CatalogService")
 public class CatalogServiceBean implements CatalogService {
 
-    @PersistenceContext(type = PersistenceContextType.EXTENDED)
+    @PersistenceContext
     EntityManager em;
 
     @Override
