@@ -15,13 +15,15 @@ public class BookQueryFactory {
         CriteriaQuery<Book> cq = cb.createQuery(Book.class);
         Root<Book> book = cq.from(Book.class);
         cq.distinct(true);
-        List<Predicate> predicates = new ArrayList<>();
+        List<Predicate> andPredicates = new ArrayList<>();
         for (String keyword : keywords) {
-            predicates.add(cb.like(cb.lower(book.<String>get("title")), "%" + keyword.toLowerCase() + "%"));
-            predicates.add(cb.like(cb.lower(book.<String>get("authors")), "%" + keyword.toLowerCase() + "%"));
-            predicates.add(cb.like(cb.lower(book.<String>get("publisher")), "%" + keyword.toLowerCase() + "%"));
+            List<Predicate> orPredicates = new ArrayList<>();
+            orPredicates.add(cb.like(cb.lower(book.<String>get("title")), "%" + keyword.toLowerCase() + "%"));
+            orPredicates.add(cb.like(cb.lower(book.<String>get("authors")), "%" + keyword.toLowerCase() + "%"));
+            orPredicates.add(cb.like(cb.lower(book.<String>get("publisher")), "%" + keyword.toLowerCase() + "%"));
+            andPredicates.add(cb.or(orPredicates.toArray(new Predicate[orPredicates.size()])));
         }
-        cq.where(cb.or(predicates.toArray(new Predicate[predicates.size()])));
+        cq.where(cb.and(andPredicates.toArray(new Predicate[andPredicates.size()])));
         return cq;
     }
 }

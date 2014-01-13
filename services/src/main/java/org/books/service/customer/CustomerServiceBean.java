@@ -4,7 +4,6 @@ import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
-import static javax.persistence.PersistenceContextType.EXTENDED;
 import javax.persistence.TypedQuery;
 import org.books.persistence.customer.Customer;
 
@@ -16,13 +15,10 @@ public class CustomerServiceBean implements CustomerService {
 
     @Override
     public void addCustomer(Customer customer) throws CustomerAlreadyExistsException {
-        Customer existingCustomer = null;
-        if (customer.getId() != null) {
-            existingCustomer = em.find(Customer.class, customer.getId());
-        }
-        if (existingCustomer != null) {
+        try {
+            findCustomer(customer.getEmail());
             throw new CustomerAlreadyExistsException();
-        } else {
+        } catch (CustomerNotFoundException e) {
             em.persist(em.merge(customer));
         }
     }
