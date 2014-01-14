@@ -1,18 +1,15 @@
 package org.books.service.order;
 
+import com.google.common.collect.Sets;
 import java.math.BigDecimal;
 import java.sql.Date;
-import java.text.SimpleDateFormat;
-import java.util.HashSet;
 import java.util.List;
-import java.util.TimeZone;
 import java.util.UUID;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
-import org.books.persistence.customer.CreditCard;
 import org.books.persistence.customer.Customer;
 import org.books.persistence.order.LineItem;
 import org.books.persistence.order.Order;
@@ -26,22 +23,22 @@ public class OrderServiceBean implements OrderService {
 
     @Override
     public String placeOrder(Customer customer, List<LineItem> items) throws CreditCardExpiredException {
-        Order order = new Order();
-        order.setOrderDate(new Date(System.currentTimeMillis()));
+        Order order = new Order();//TODO inject 
         order.setAmount(summarizeTotalOrderAmount(items));
         order.setOrderNumber(UUID.randomUUID().toString()); // Todo: Order Number
         order.setCustomer(customer);
         order.setAddress(customer.getAddress());
-        order.setCreditCard(checkCreditCard(customer.getCreditCard()));
-        order.setLineItems(new HashSet<>(items));
-        order.setStatus(Order.Status.open);
+        order.setCreditCard(customer.getCreditCard());
+        order.setLineItems(Sets.newHashSet(items));
+        //TODO @PostConstruct >>> order.setStatus(Order.Status.open);
+        order.setOrderDate(new Date(System.currentTimeMillis()));
         try {
             em.persist(order);
+            return order.getOrderNumber();
         } catch (Exception e) {
-            //TODO
-            //validation CreditCardExpiredException
+            //TODO catch ValidationException o.ä.
+            throw new CreditCardExpiredException(e);
         }
-        return order.getOrderNumber();
     }
 
     @Override
@@ -78,13 +75,4 @@ public class OrderServiceBean implements OrderService {
         return amount;
     }
 
-    //TODO in Validator auslagern
-    private CreditCard checkCreditCard(CreditCard creditCard) throws CreditCardExpiredException {
-        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM");
-        df.setTimeZone(TimeZone.getTimeZone("UTC"));
-        if (df.format(creditCard.getExpirationDate()).compareTo(df.format(new java.util.Date())) < 0) {
-            throw new CreditCardExpiredException();
-        }
-        return creditCard;
-    }
 }

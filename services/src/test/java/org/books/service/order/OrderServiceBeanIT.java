@@ -1,7 +1,7 @@
 package org.books.service.order;
 
+import com.google.common.collect.Lists;
 import java.sql.Date;
-import java.util.ArrayList;
 import java.util.List;
 import javax.ejb.EJBException;
 import javax.naming.InitialContext;
@@ -141,7 +141,7 @@ public class OrderServiceBeanIT {
     }
 
     private List<LineItem> createLineItems(Book book) {
-        List<LineItem> lineItems = new ArrayList<>();
+        List<LineItem> lineItems = Lists.newArrayList();
         final LineItem lineItem = new LineItem();
         lineItem.setBook(book);
         lineItems.add(lineItem);

@@ -1,8 +1,5 @@
 package org.books.persistence.customer;
 
-import org.books.persistence.customer.CreditCard;
-import org.books.persistence.customer.Customer;
-import org.books.persistence.customer.Address;
 import java.sql.Date;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;

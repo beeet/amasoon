@@ -1,8 +1,8 @@
 package org.books.persistence.order;
 
+import com.google.common.collect.Sets;
 import java.math.BigDecimal;
 import java.sql.Date;
-import java.util.HashSet;
 import java.util.Set;
 import javax.annotation.PostConstruct;
 import javax.persistence.CascadeType;
@@ -53,7 +53,7 @@ public class Order extends BaseEntity {
     @Embedded
     private CreditCard creditCard;
     @OneToMany(cascade = CascadeType.ALL)
-    private Set<LineItem> lineItems = new HashSet<>();
+    private Set<LineItem> lineItems = Sets.newHashSet();
 
     public Address getAddress() {
         return address;

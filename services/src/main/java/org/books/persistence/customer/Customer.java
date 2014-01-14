@@ -6,6 +6,7 @@ import javax.persistence.Entity;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
+import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import org.books.persistence.BaseEntity;
 
@@ -22,6 +23,7 @@ public class Customer extends BaseEntity implements Serializable {
     @NotNull
     private Address address;
     @Embedded
+    @Valid
     @NotNull
     private CreditCard creditCard;
 

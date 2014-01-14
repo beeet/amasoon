@@ -1,8 +1,8 @@
 package org.books.persistence.order;
 
+import com.google.common.collect.Sets;
 import java.math.BigDecimal;
 import java.sql.Date;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
@@ -90,7 +90,7 @@ public class OrderIT {
         CreditCard creditcard = createCreditcard();
         Book book = createBook();
 
-        Set<LineItem> lineItems = new HashSet<>();
+        Set<LineItem> lineItems = Sets.newHashSet();
         final LineItem lineItem = new LineItem();
         lineItem.setBook(book);
         lineItems.add(lineItem);

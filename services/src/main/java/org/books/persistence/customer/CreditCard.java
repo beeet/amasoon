@@ -17,6 +17,7 @@ public class CreditCard implements Serializable {
     @Enumerated(EnumType.STRING)
     private Type type;
     private String number;
+    @ExpirationDateConstraint //TODO evt. reuse Validator from webtier
     private Date expirationDate;
 
     public Type getType() {

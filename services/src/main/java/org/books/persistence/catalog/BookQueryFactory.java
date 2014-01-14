@@ -1,6 +1,6 @@
 package org.books.persistence.catalog;
 
-import java.util.ArrayList;
+import com.google.common.collect.Lists;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
@@ -15,9 +15,9 @@ public class BookQueryFactory {
         CriteriaQuery<Book> cq = cb.createQuery(Book.class);
         Root<Book> book = cq.from(Book.class);
         cq.distinct(true);
-        List<Predicate> andPredicates = new ArrayList<>();
+        List<Predicate> andPredicates = Lists.newArrayList();
         for (String keyword : keywords) {
-            List<Predicate> orPredicates = new ArrayList<>();
+            List<Predicate> orPredicates = Lists.newArrayList();
             orPredicates.add(cb.like(cb.lower(book.<String>get("title")), "%" + keyword.toLowerCase() + "%"));
             orPredicates.add(cb.like(cb.lower(book.<String>get("authors")), "%" + keyword.toLowerCase() + "%"));
             orPredicates.add(cb.like(cb.lower(book.<String>get("publisher")), "%" + keyword.toLowerCase() + "%"));
