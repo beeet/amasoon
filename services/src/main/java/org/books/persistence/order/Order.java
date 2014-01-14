@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.sql.Date;
 import java.util.HashSet;
 import java.util.Set;
+import javax.annotation.PostConstruct;
 import javax.persistence.CascadeType;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
@@ -114,8 +115,25 @@ public class Order extends BaseEntity {
         return status;
     }
 
+    public boolean isOpen() {
+        return Status.open.equals(status);
+    }
+
+    public boolean isCanceled() {
+        return Status.canceled.equals(status);
+    }
+
+    public boolean isClosed() {
+        return Status.closed.equals(status);
+    }
+
     public void setStatus(Status status) {
         this.status = status;
     }
 
+    @PostConstruct
+    private void init() {
+        this.status = Status.open;
+        //TODO testen
+    }
 }

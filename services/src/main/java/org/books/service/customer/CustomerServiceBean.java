@@ -29,8 +29,8 @@ public class CustomerServiceBean implements CustomerService {
         query.setParameter("email", email);
         try {
             return query.getSingleResult();
-        } catch (NoResultException nre) {
-            throw new CustomerNotFoundException();
+        } catch (NoResultException e) {
+            throw new CustomerNotFoundException(e);
         }
     }
 

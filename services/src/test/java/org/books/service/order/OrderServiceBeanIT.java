@@ -1,11 +1,9 @@
 package org.books.service.order;
 
-import java.math.BigDecimal;
 import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
-import java.util.UUID;
+import javax.ejb.EJBException;
 import javax.naming.InitialContext;
 import org.books.persistence.catalog.Book;
 import org.books.persistence.customer.Address;
@@ -13,6 +11,8 @@ import org.books.persistence.customer.CreditCard;
 import org.books.persistence.customer.Customer;
 import org.books.persistence.order.LineItem;
 import org.books.persistence.order.Order;
+import static org.testng.Assert.assertNotNull;
+import static org.testng.Assert.assertTrue;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
@@ -20,6 +20,7 @@ public class OrderServiceBeanIT {
 
     private static final String JNDI_NAME = "java:global/services/OrderService";
     private OrderService orderService;
+    private String orderNumber;
 
     @BeforeClass
     public void init() throws Exception {
@@ -27,37 +28,70 @@ public class OrderServiceBeanIT {
     }
 
     @Test
-    public void placeOrder() throws CreditCardExpiredException {
-        Customer customer = createCustomer("Beat Breu", "beat.breu@radsport.ch");
+    public void placeOrder() throws Exception {
+        //arrange
+        Book book = createBook();
         Address address = createAddress();
         CreditCard creditCard = createCreditcard();
-        Book book = createBook();
+        Customer customer = createCustomer("Beat Breu", "beat.breu@radsport.ch");
         customer.setAddress(address);
         customer.setCreditCard(creditCard);
+        List<LineItem> lineItems = createLineItems(book);
+        //act
+        orderNumber = orderService.placeOrder(customer, lineItems);
+    }
 
-        List<LineItem> lineItems = new ArrayList<>();
-        final LineItem lineItem = new LineItem();
-        lineItem.setBook(book);
-        lineItems.add(lineItem);
-
+    @Test(expectedExceptions = EJBException.class, expectedExceptionsMessageRegExp = ".*CreditCardExpiredException.*")
+    public void placeOrder_CreditCardExpiredException() throws Exception {
+        //arrange
+        Book book = createBook();
+        Address address = createAddress();
+        CreditCard creditCard = createInvalidCreditCard();
+        Customer customer = createCustomer("Godi Schmutz", "godi.schmutz@radsport.ch");
+        customer.setAddress(address);
+        customer.setCreditCard(creditCard);
+        List<LineItem> lineItems = createLineItems(book);
+        //act
         orderService.placeOrder(customer, lineItems);
     }
 
-    @Test(expectedExceptions = CreditCardExpiredException.class)
-    public void placeOrder_CreditCardExpiredException() throws CreditCardExpiredException {
-        Customer customer = createCustomer("Beat Breu", "beat.breu@radsport.ch");
-        Address address = createAddress();
-        CreditCard creditCard = createInvalidCreditCard();
-        Book book = createBook();
-        customer.setAddress(address);
-        customer.setCreditCard(creditCard);
+    @Test(dependsOnMethods = "placeOrder")
+    public void findOrder() throws Exception {
+        //act
+        Order result = orderService.findOrder(orderNumber);
+        //assert
+        assertNotNull(result);
+    }
 
-        List<LineItem> lineItems = new ArrayList<>();
-        final LineItem lineItem = new LineItem();
-        lineItem.setBook(book);
-        lineItems.add(lineItem);
+    @Test(expectedExceptions = EJBException.class, expectedExceptionsMessageRegExp = ".*OrderNotFoundException.*")
+    public void findOrder_OrderNotFound() throws Exception {
+        orderService.findOrder("123");
+    }
 
-        orderService.placeOrder(customer, lineItems);
+    @Test
+    public void getOrders() {
+        List<Order> result = orderService.getOrders(new Customer());
+        //TODO
+    }
+
+    @Test
+    public void getOrders_NoOrdersFound() {
+        //act
+        List<Order> result = orderService.getOrders(new Customer());
+        //assert
+        assertTrue(result.isEmpty());
+    }
+
+    @Test
+    public void cancelOrder() throws Exception {
+        orderService.cancelOrder(new Order());
+        //TODO
+    }
+
+    @Test(expectedExceptions = EJBException.class, expectedExceptionsMessageRegExp = ".*OrderNotCancelableException.*")
+    public void cancelOrder_OrderIsNotYetPersisted() throws Exception {
+        orderService.cancelOrder(new Order());
+        //TODO
     }
 
     private Customer createCustomer(String name, String email) {
@@ -67,20 +101,6 @@ public class OrderServiceBeanIT {
         customer.setAddress(new Address());
         customer.setCreditCard(new CreditCard());
         return customer;
-    }
-
-    private Order createOrder(Customer customer, Address address, CreditCard creditcard, Set<LineItem> lineItems) {
-        Order order = new Order();
-        order.setOrderDate(new Date(System.currentTimeMillis()));
-        order.setAmount(BigDecimal.TEN);
-        order.setOrderNumber(UUID.randomUUID().toString());
-        order.setCustomer(customer);
-        order.setAddress(address);
-        order.setCreditCard(creditcard);
-        order.setLineItems(lineItems);
-        order.setStatus(Order.Status.open);
-        order.setAmount(BigDecimal.valueOf(52L));
-        return order;
     }
 
     private CreditCard createCreditcard() {
@@ -119,4 +139,13 @@ public class OrderServiceBeanIT {
         book.setTitle("Java in a Nutshel");
         return book;
     }
+
+    private List<LineItem> createLineItems(Book book) {
+        List<LineItem> lineItems = new ArrayList<>();
+        final LineItem lineItem = new LineItem();
+        lineItem.setBook(book);
+        lineItems.add(lineItem);
+        return lineItems;
+    }
+
 }

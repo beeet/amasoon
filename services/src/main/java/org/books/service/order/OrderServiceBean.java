@@ -11,7 +11,6 @@ import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
-import javax.persistence.PersistenceContextType;
 import javax.persistence.TypedQuery;
 import org.books.persistence.customer.CreditCard;
 import org.books.persistence.customer.Customer;
@@ -29,14 +28,19 @@ public class OrderServiceBean implements OrderService {
     public String placeOrder(Customer customer, List<LineItem> items) throws CreditCardExpiredException {
         Order order = new Order();
         order.setOrderDate(new Date(System.currentTimeMillis()));
-        order.setAmount(getOrderAmount(items));
+        order.setAmount(summarizeTotalOrderAmount(items));
         order.setOrderNumber(UUID.randomUUID().toString()); // Todo: Order Number
         order.setCustomer(customer);
         order.setAddress(customer.getAddress());
         order.setCreditCard(checkCreditCard(customer.getCreditCard()));
         order.setLineItems(new HashSet<>(items));
         order.setStatus(Order.Status.open);
-        em.persist(order);
+        try {
+            em.persist(order);
+        } catch (Exception e) {
+            //TODO
+            //validation CreditCardExpiredException
+        }
         return order.getOrderNumber();
     }
 
@@ -60,12 +64,13 @@ public class OrderServiceBean implements OrderService {
 
     @Override
     public void cancelOrder(Order order) throws OrderNotCancelableException {
+        //TODO: if the order is already closed or canceled throw exception
         order.setStatus(Status.canceled);
         em.persist(em.merge(order));
     }
 
-    private BigDecimal getOrderAmount(List<LineItem> items) {
-        BigDecimal amount = new BigDecimal(0);
+    private BigDecimal summarizeTotalOrderAmount(List<LineItem> items) {
+        BigDecimal amount = BigDecimal.ZERO;
         for (LineItem item : items) {
             BigDecimal quantity = BigDecimal.valueOf(item.getQuantity());
             amount = amount.add(item.getBook().getPrice().multiply(quantity));
@@ -73,6 +78,7 @@ public class OrderServiceBean implements OrderService {
         return amount;
     }
 
+    //TODO in Validator auslagern
     private CreditCard checkCreditCard(CreditCard creditCard) throws CreditCardExpiredException {
         SimpleDateFormat df = new SimpleDateFormat("yyyy-MM");
         df.setTimeZone(TimeZone.getTimeZone("UTC"));

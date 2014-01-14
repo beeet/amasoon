@@ -7,7 +7,6 @@ import javax.naming.InitialContext;
 import org.books.persistence.catalog.Book;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
-import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 public class CatalogServiceBeanIT {
@@ -17,41 +16,37 @@ public class CatalogServiceBeanIT {
     private Book book1;
     private Book book2;
 
-    @BeforeClass
+    // @BeforeClass
     public void init() throws Exception {
         catalogService = (CatalogService) new InitialContext().lookup(JNDI_NAME);
     }
 
     @Test
     public void addBook() throws Exception {
+        //arrange
         book1 = createBook();
+        //act
         catalogService.addBook(book1);
     }
 
     @Test(dependsOnMethods = "addBook")
-    public void findBook() throws BookNotFoundException {
+    public void findBook() throws Exception {
+        //act
         Book result = catalogService.findBook(book1.getIsbn());
+        //assert
         assertEquals(result.getTitle(), book1.getTitle());
         assertEquals(result.getIsbn(), book1.getIsbn());
         assertEquals(result.getPublisher(), book1.getPublisher());
     }
 
-    @Test(expectedExceptions = BookAlreadyExistsException.class, dependsOnMethods = "findBook")
-    public void addBook_AddTwice_BookAlreadyExistsExceptionExpected() throws Exception, Throwable {
-        try {
-            catalogService.addBook(book1);
-        } catch (EJBException ejbException) {
-            throw ejbException.getCause();
-        }
+    @Test(dependsOnMethods = "findBook", expectedExceptions = EJBException.class, expectedExceptionsMessageRegExp = ".*BookAlreadyExistsException.*")
+    public void addBook_AddTwice_BookAlreadyExistsExceptionExpected() throws Exception {
+        catalogService.addBook(book1);
     }
 
-    @Test(expectedExceptions = BookNotFoundException.class)
-    public void findBook_BookDoesNotExist_BookNotFoundExceptionExpected() throws Exception, Throwable {
-        try {
-            catalogService.findBook("gugus");
-        } catch (EJBException ejbException) {
-            throw ejbException.getCause();
-        }
+    @Test(expectedExceptions = EJBException.class, expectedExceptionsMessageRegExp = ".*BookNotFoundException.*")
+    public void findBook_BookDoesNotExist_BookNotFoundExceptionExpected() throws Exception {
+        catalogService.findBook("gugus");
     }
 
     @Test(dependsOnMethods = "addBook")

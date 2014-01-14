@@ -7,7 +7,7 @@ import javax.naming.InitialContext;
 import org.books.persistence.customer.Address;
 import org.books.persistence.customer.CreditCard;
 import org.books.persistence.customer.Customer;
-import org.testng.Assert;
+import static org.testng.Assert.assertEquals;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
@@ -23,53 +23,48 @@ public class CustomerServiceBeanIT {
     }
 
     @Test
-    public void addCustomer() throws CustomerAlreadyExistsException {
+    public void addCustomer() throws Exception {
         customer = createCustomer();
         customerService.addCustomer(customer);
     }
 
     @Test(dependsOnMethods = "addCustomer")
-    public void findCustomer() throws CustomerAlreadyExistsException, CustomerNotFoundException {
-        Customer foundCustomer = customerService.findCustomer(customer.getEmail());
-        Assert.assertEquals(foundCustomer.getName(), customer.getName());
-        Assert.assertEquals(foundCustomer.getEmail(), customer.getEmail());
+    public void findCustomer() throws Exception {
+        //act
+        Customer result = customerService.findCustomer(customer.getEmail());
+        //assert
+        assertEquals(result.getName(), customer.getName());
+        assertEquals(result.getEmail(), customer.getEmail());
     }
 
-    @Test(expectedExceptions = CustomerAlreadyExistsException.class, dependsOnMethods = "findCustomer")
-    public void addCustomer_CustomerAlreadyExistsException() throws Throwable {
-        Customer foundCustomer = customerService.findCustomer(customer.getEmail());
-        try {
-            customerService.addCustomer(foundCustomer);
-        } catch (EJBException ejbException) {
-            throw ejbException.getCause();
-        }
+    @Test(dependsOnMethods = "findCustomer", expectedExceptions = EJBException.class, expectedExceptionsMessageRegExp = ".*CustomerAlreadyExistsException.*")
+    public void addCustomer_CustomerAlreadyExistsException() throws Exception {
+        //arrange
+        Customer existingCustomer = customerService.findCustomer(customer.getEmail());
+        //act
+        customerService.addCustomer(existingCustomer);
     }
 
-    @Test(expectedExceptions = CustomerNotFoundException.class)
-    public void findCustomer_CustomerNotFoundException() throws CustomerAlreadyExistsException, CustomerNotFoundException, Throwable {
-        try {
-            customerService.findCustomer("notexisting@address.com");
-        } catch (EJBException ejbException) {
-            throw ejbException.getCause();
-        }
+    @Test(expectedExceptions = EJBException.class, expectedExceptionsMessageRegExp = ".*CustomerNotFoundException.*")
+    public void findCustomer_CustomerNotFoundException() throws Exception {
+        //act
+        customerService.findCustomer("notexisting@address.com");
     }
 
     @Test(dependsOnMethods = "findCustomer")
-    public void updateCustomer() throws CustomerAlreadyExistsException, CustomerNotFoundException {
+    public void updateCustomer() throws Exception {
         // arrange
         Customer foundCustomer = customerService.findCustomer(customer.getEmail());
-
         // act
         foundCustomer.setName("Updated Customer");
         foundCustomer.getAddress().setCountry("USA");
         foundCustomer.getCreditCard().setType(CreditCard.Type.Visa);
         customerService.updateCustomer(foundCustomer);
-
         // assert
         Customer updatedCustomer = customerService.findCustomer(customer.getEmail());
-        Assert.assertEquals("Updated Customer", updatedCustomer.getName());
-        Assert.assertEquals("USA", updatedCustomer.getAddress().getCountry());
-        Assert.assertEquals(CreditCard.Type.Visa, updatedCustomer.getCreditCard().getType());
+        assertEquals("Updated Customer", updatedCustomer.getName());
+        assertEquals("USA", updatedCustomer.getAddress().getCountry());
+        assertEquals(CreditCard.Type.Visa, updatedCustomer.getCreditCard().getType());
     }
 
     private Customer createCustomer() {
