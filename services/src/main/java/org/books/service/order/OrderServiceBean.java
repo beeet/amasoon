@@ -47,8 +47,8 @@ public class OrderServiceBean implements OrderService {
         query.setParameter("number", number);
         try {
             return query.getSingleResult();
-        } catch (NoResultException nre) {
-            throw new OrderNotFoundException();
+        } catch (NoResultException e) {
+            throw new OrderNotFoundException(e);
         }
     }
 
@@ -61,9 +61,14 @@ public class OrderServiceBean implements OrderService {
 
     @Override
     public void cancelOrder(Order order) throws OrderNotCancelableException {
-        //TODO: if the order is already closed or canceled throw exception
+        //Order foundOrder = em.find(Order.class, order);$
+        //TODO was wenn die Order noch nicht gespeichert wurde????
+        //auch hier sollte ein query nicht nötig sein. wenn noch nicht gespeichert, dann einfach verwerfen
+        if (order.isCanceled() || order.isClosed()) {
+            throw new OrderNotCancelableException();
+        }
         order.setStatus(Status.canceled);
-        em.persist(em.merge(order));
+        em.persist(em.merge(order));//TODO muss concurrent modification abgefangen werden?
     }
 
     private BigDecimal summarizeTotalOrderAmount(List<LineItem> items) {
