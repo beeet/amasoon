@@ -5,7 +5,8 @@ import java.util.List;
 import javax.ejb.EJBException;
 import javax.naming.InitialContext;
 import org.books.persistence.catalog.Book;
-import org.testng.Assert;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertTrue;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
@@ -13,7 +14,8 @@ public class CatalogServiceBeanIT {
 
     private static final String JNDI_NAME = "java:global/services/CatalogService";
     private CatalogService catalogService;
-    private Book book;
+    private Book book1;
+    private Book book2;
 
     @BeforeClass
     public void init() throws Exception {
@@ -22,22 +24,22 @@ public class CatalogServiceBeanIT {
 
     @Test
     public void addBook() throws Exception {
-        book = createBook();
-        catalogService.addBook(book);
+        book1 = createBook();
+        catalogService.addBook(book1);
     }
 
     @Test(dependsOnMethods = "addBook")
     public void findBook() throws BookNotFoundException {
-        Book result = catalogService.findBook(book.getIsbn());
-        Assert.assertEquals(result.getTitle(), book.getTitle());
-        Assert.assertEquals(result.getIsbn(), book.getIsbn());
-        Assert.assertEquals(result.getPublisher(), book.getPublisher());
+        Book result = catalogService.findBook(book1.getIsbn());
+        assertEquals(result.getTitle(), book1.getTitle());
+        assertEquals(result.getIsbn(), book1.getIsbn());
+        assertEquals(result.getPublisher(), book1.getPublisher());
     }
 
     @Test(expectedExceptions = BookAlreadyExistsException.class, dependsOnMethods = "findBook")
     public void addBook_AddTwice_BookAlreadyExistsExceptionExpected() throws Exception, Throwable {
         try {
-            catalogService.addBook(book);
+            catalogService.addBook(book1);
         } catch (EJBException ejbException) {
             throw ejbException.getCause();
         }
@@ -55,15 +57,15 @@ public class CatalogServiceBeanIT {
     @Test(dependsOnMethods = "addBook")
     public void searchBooks_FindOneBook() throws Exception {
         //arrange
-        catalogService.addBook(createAnotherBook());
+        book2 = createAnotherBook();
+        catalogService.addBook(book2);
         //act
         List<Book> foundBooks = catalogService.searchBooks("Java", "Schrager", "Wrox");
         //assert
-        Assert.assertEquals(foundBooks.size(), 1);
-        Book result = Iterables.getFirst(foundBooks, null);
-        Assert.assertEquals(result.getTitle(), book.getTitle());
-        Assert.assertEquals(result.getIsbn(), book.getIsbn());
-        Assert.assertEquals(result.getPublisher(), book.getPublisher());
+        Book result = Iterables.getOnlyElement(foundBooks);
+        assertEquals(result.getTitle(), book1.getTitle());
+        assertEquals(result.getIsbn(), book1.getIsbn());
+        assertEquals(result.getPublisher(), book1.getPublisher());
     }
 
     @Test(dependsOnMethods = "searchBooks_FindOneBook")
@@ -71,7 +73,15 @@ public class CatalogServiceBeanIT {
         //act
         List<Book> foundBooks = catalogService.searchBooks("Java");
         //assert
-        Assert.assertEquals(foundBooks.size(), 2);
+        assertEquals(foundBooks.size(), 2);
+    }
+
+    @Test(dependsOnMethods = "searchBooks_FindOneBook")
+    public void searchBooks_FindNoBooks() throws Exception {
+        //act
+        List<Book> foundBooks = catalogService.searchBooks("gugus");
+        //assert
+        assertTrue(foundBooks.isEmpty());
     }
 
     private static Book createBook() {
