@@ -1,6 +1,7 @@
 package org.books.service.order;
 
 import com.google.common.collect.Lists;
+import java.math.BigDecimal;
 import java.sql.Date;
 import java.util.List;
 import javax.ejb.EJBException;
@@ -137,6 +138,7 @@ public class OrderServiceBeanIT {
         book.setPublisher("o'Reily");
         book.setPublicationDate(new Date(System.currentTimeMillis()));
         book.setTitle("Java in a Nutshel");
+        book.setPrice(new BigDecimal("23.99"));
         return book;
     }
 
@@ -144,6 +146,7 @@ public class OrderServiceBeanIT {
         List<LineItem> lineItems = Lists.newArrayList();
         final LineItem lineItem = new LineItem();
         lineItem.setBook(book);
+        lineItem.setQuantity(1);
         lineItems.add(lineItem);
         return lineItems;
     }
