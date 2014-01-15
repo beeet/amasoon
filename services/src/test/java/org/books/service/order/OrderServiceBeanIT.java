@@ -4,6 +4,7 @@ import com.google.common.collect.Lists;
 import java.math.BigDecimal;
 import java.sql.Date;
 import java.util.List;
+import java.util.Random;
 import java.util.UUID;
 import javax.ejb.EJBException;
 import javax.naming.InitialContext;
@@ -120,8 +121,9 @@ public class OrderServiceBeanIT {
     }
 
     private Customer createCustomer(String name, String email) {
+        Random randomGenerator = new Random();
         Customer customer = new Customer();
-        customer.setEmail(email);
+        customer.setEmail(randomGenerator.nextInt(10000000) + email);
         customer.setName(name);
         customer.setAddress(new Address());
         customer.setCreditCard(new CreditCard());
