@@ -4,7 +4,9 @@ import com.google.common.collect.Iterables;
 import java.math.BigDecimal;
 import java.sql.Date;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 import javax.ejb.EJBException;
 import javax.naming.InitialContext;
@@ -70,10 +72,12 @@ public class CatalogServiceBeanIT {
         //act
         List<Book> foundBooks = catalogService.searchBooks("Java", "Schrager", "Wrox");
         //assert
-        Book result = Iterables.getOnlyElement(foundBooks);
-        assertEquals(result.getTitle(), book1.getTitle());
-        assertEquals(result.getIsbn(), book1.getIsbn());
-        assertEquals(result.getPublisher(), book1.getPublisher());
+        Map<String, String> distinctedBooks = new HashMap<>();
+        for (Book book : foundBooks) {
+            distinctedBooks.put(book.getTitle(), book.getAuthors());
+        }
+        assertEquals(distinctedBooks.size(), 1);
+        assertTrue(distinctedBooks.containsKey("Professional Java JDK 6 Edition"));
     }
 
     @Test(dependsOnMethods = "searchBooks_FindOneBook")
@@ -81,7 +85,13 @@ public class CatalogServiceBeanIT {
         //act
         List<Book> foundBooks = catalogService.searchBooks("Java");
         //assert
-        assertEquals(foundBooks.size(), 2);
+        Map<String, String> distinctedBooks = new HashMap<>();
+        for (Book book : foundBooks) {
+            distinctedBooks.put(book.getTitle(), book.getAuthors());
+        }
+        assertEquals(distinctedBooks.size(), 2);
+        assertTrue(distinctedBooks.containsKey("Professional Java JDK 6 Edition"));
+        assertTrue(distinctedBooks.containsKey("Java for Dummies"));
     }
 
     @Test(dependsOnMethods = "searchBooks_FindOneBook")
