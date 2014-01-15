@@ -1,8 +1,10 @@
 package org.books.service.order;
 
 import com.google.common.collect.Lists;
+import java.math.BigDecimal;
 import java.sql.Date;
 import java.util.List;
+import java.util.UUID;
 import javax.ejb.EJBException;
 import javax.naming.InitialContext;
 import org.books.persistence.catalog.Book;
@@ -41,8 +43,8 @@ public class OrderServiceBeanIT {
         orderNumber = orderService.placeOrder(customer, lineItems);
     }
 
-    @Test(expectedExceptions = EJBException.class, expectedExceptionsMessageRegExp = ".*CreditCardExpiredException.*")
-    public void placeOrder_CreditCardExpiredException() throws Exception {
+    @Test(expectedExceptions = CreditCardExpiredException.class)
+    public void placeOrder_CreditCardExpiredException() throws Throwable {
         //arrange
         Book book = createBook();
         Address address = createAddress();
@@ -52,7 +54,11 @@ public class OrderServiceBeanIT {
         customer.setCreditCard(creditCard);
         List<LineItem> lineItems = createLineItems(book);
         //act
-        orderService.placeOrder(customer, lineItems);
+        try {
+            orderService.placeOrder(customer, lineItems);
+        } catch (EJBException ejbException) {
+            throw ejbException.getCause();
+        }
     }
 
     @Test(dependsOnMethods = "placeOrder")
@@ -63,9 +69,13 @@ public class OrderServiceBeanIT {
         assertNotNull(result);
     }
 
-    @Test(expectedExceptions = EJBException.class, expectedExceptionsMessageRegExp = ".*OrderNotFoundException.*")
-    public void findOrder_OrderNotFound() throws Exception {
-        orderService.findOrder("123");
+    @Test(expectedExceptions = OrderNotFoundException.class)
+    public void findOrder_OrderNotFound() throws Throwable {
+        try {
+            orderService.findOrder("123");
+        } catch (EJBException ejbException) {
+            throw ejbException.getCause();
+        }
     }
 
     @Test
@@ -84,14 +94,29 @@ public class OrderServiceBeanIT {
 
     @Test
     public void cancelOrder() throws Exception {
-        orderService.cancelOrder(new Order());
-        //TODO
+        //arrange
+        Address address = createAddress();
+        CreditCard creditCard = createCreditcard();
+        Customer customer = createCustomer("Rudi Rüssel", "rudi.ruessel@radsport.ch");
+        customer.setAddress(address);
+        customer.setCreditCard(creditCard);
+        List<LineItem> lineItems = createLineItems(createBook());
+        Order order = createOrder(customer, address, creditCard, lineItems);
+        //act
+        orderService.cancelOrder(order);
     }
 
-    @Test(expectedExceptions = EJBException.class, expectedExceptionsMessageRegExp = ".*OrderNotCancelableException.*")
-    public void cancelOrder_OrderIsNotYetPersisted() throws Exception {
-        orderService.cancelOrder(new Order());
-        //TODO
+    @Test(expectedExceptions = OrderNotCancelableException.class)
+    public void cancelOrder_OrderIsNotYetPersisted() throws Throwable {
+        //arrange
+        Order order = new Order();
+        order.setStatus(Order.Status.closed);
+        //act
+        try {
+            orderService.cancelOrder(order);
+        } catch (EJBException ejbException) {
+            throw ejbException.getCause();
+        }
     }
 
     private Customer createCustomer(String name, String email) {
@@ -107,7 +132,7 @@ public class OrderServiceBeanIT {
         CreditCard creditcard = new CreditCard();
         creditcard.setType(CreditCard.Type.MasterCard);
         creditcard.setNumber("5411222233334445");
-        creditcard.setExpirationDate(new Date(System.currentTimeMillis() + 10000));
+        creditcard.setExpirationDate(new Date(115, 6, 18));
         return creditcard;
     }
 
@@ -115,7 +140,7 @@ public class OrderServiceBeanIT {
         CreditCard creditcard = new CreditCard();
         creditcard.setType(CreditCard.Type.MasterCard);
         creditcard.setNumber("5411222233334445");
-        creditcard.setExpirationDate(new Date(System.currentTimeMillis() - 10000));
+        creditcard.setExpirationDate(new Date(113, 6, 18));
         return creditcard;
     }
 
@@ -137,6 +162,7 @@ public class OrderServiceBeanIT {
         book.setPublisher("o'Reily");
         book.setPublicationDate(new Date(System.currentTimeMillis()));
         book.setTitle("Java in a Nutshel");
+        book.setPrice(new BigDecimal("23.99"));
         return book;
     }
 
@@ -144,8 +170,23 @@ public class OrderServiceBeanIT {
         List<LineItem> lineItems = Lists.newArrayList();
         final LineItem lineItem = new LineItem();
         lineItem.setBook(book);
+        lineItem.setQuantity(1);
         lineItems.add(lineItem);
         return lineItems;
+    }
+
+    private Order createOrder(Customer customer, Address address, CreditCard creditcard, List<LineItem> lineItems) {
+        Order order = new Order();
+        order.setOrderDate(new Date(System.currentTimeMillis()));
+        order.setAmount(BigDecimal.TEN);
+        order.setOrderNumber(UUID.randomUUID().toString());
+        order.setCustomer(customer);
+        order.setAddress(address);
+        order.setCreditCard(creditcard);
+        order.setLineItems(lineItems);
+        order.setStatus(Order.Status.open);
+        order.setAmount(BigDecimal.valueOf(52L));
+        return order;
     }
 
 }

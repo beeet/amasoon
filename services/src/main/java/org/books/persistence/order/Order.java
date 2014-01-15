@@ -1,9 +1,9 @@
 package org.books.persistence.order;
 
-import com.google.common.collect.Sets;
+import com.google.common.collect.Lists;
 import java.math.BigDecimal;
 import java.sql.Date;
-import java.util.Set;
+import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.persistence.CascadeType;
 import javax.persistence.Embedded;
@@ -44,7 +44,7 @@ public class Order extends BaseEntity {
     private BigDecimal amount;
     @Enumerated(EnumType.STRING)
     private Status status;
-    @ManyToOne(optional = false, fetch = FetchType.LAZY)
+    @ManyToOne(optional = false, fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     private Customer customer;
     @Embedded
     @NotNull
@@ -53,8 +53,13 @@ public class Order extends BaseEntity {
     @Embedded
     private CreditCard creditCard;
     @OneToMany(cascade = CascadeType.ALL)
-    private Set<LineItem> lineItems = Sets.newHashSet();
+    private List<LineItem> lineItems = Lists.newArrayList();
 
+    
+    public Order(){
+         this.status = Status.open;//TODO remove if construction by injection
+    }
+    
     public Address getAddress() {
         return address;
     }
@@ -71,11 +76,11 @@ public class Order extends BaseEntity {
         this.creditCard = creditCard;
     }
 
-    public Set<LineItem> getLineItems() {
+    public List<LineItem> getLineItems() {
         return lineItems;
     }
 
-    public void setLineItems(Set<LineItem> lineItems) {
+    public void setLineItems(List<LineItem> lineItems) {
         this.lineItems = lineItems;
     }
 
