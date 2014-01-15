@@ -107,7 +107,11 @@ public class OrderServiceBean implements OrderService {
             Logger.getLogger(OrderServiceBean.class.getName()).log(Level.SEVERE, null, ex);
         } finally {
             if (null != connection) {
-                //connection.close();
+                try {
+                    connection.close();
+                } catch (JMSException ex) {
+                    Logger.getLogger(OrderServiceBean.class.getName()).log(Level.SEVERE, null, ex);
+                }
             }
         }
     }
