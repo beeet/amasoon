@@ -1,6 +1,6 @@
 package org.books.service.order;
 
-class OrderNotCancelableException extends Exception {
+public class OrderNotCancelableException extends Exception {
 
     public OrderNotCancelableException() {
     }
