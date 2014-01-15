@@ -4,7 +4,6 @@ import com.google.common.collect.Lists;
 import java.math.BigDecimal;
 import java.sql.Date;
 import java.util.List;
-import javax.annotation.PostConstruct;
 import javax.persistence.CascadeType;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
@@ -57,7 +56,7 @@ public class Order extends BaseEntity {
 
     
     public Order(){
-         this.status = Status.open;//TODO remove if construction by injection
+         this.status = Status.open;
     }
     
     public Address getAddress() {
@@ -136,9 +135,4 @@ public class Order extends BaseEntity {
         this.status = status;
     }
 
-    @PostConstruct
-    private void init() {
-        this.status = Status.open;
-        //TODO testen
-    }
 }

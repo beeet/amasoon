@@ -34,7 +34,7 @@ public class OrderProcessorBean implements MessageListener {
             MapMessage mapMessage = (MapMessage) message;
             Integer orderId = mapMessage.getInt("orderId");
             Order order = em.find(Order.class, orderId);
-            timerService.createSingleActionTimer(100000, new TimerConfig(order, true));
+            timerService.createSingleActionTimer(20000, new TimerConfig(order, true));
         } catch (JMSException ex) {
             Logger.getLogger(OrderProcessorBean.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -44,7 +44,7 @@ public class OrderProcessorBean implements MessageListener {
     public void setStateToClose(Timer timer) {
         Order order = (Order) timer.getInfo();
         order = em.merge(order);
-        if (order.getStatus() == Order.Status.open) {
+        if (order.isOpen()) {
             order.setStatus(Order.Status.closed);
         }
     }

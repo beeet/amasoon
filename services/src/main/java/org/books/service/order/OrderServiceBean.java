@@ -4,6 +4,7 @@ import com.google.common.collect.Lists;
 import java.math.BigDecimal;
 import java.sql.Date;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -19,7 +20,10 @@ import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
-import javax.validation.ConstraintViolationException;
+import javax.validation.ConstraintViolation;
+import javax.validation.Validation;
+import javax.validation.ValidatorFactory;
+import org.books.persistence.customer.CreditCard;
 import org.books.persistence.customer.Customer;
 import org.books.persistence.order.LineItem;
 import org.books.persistence.order.Order;
@@ -39,17 +43,25 @@ public class OrderServiceBean implements OrderService {
     public String placeOrder(Customer customer, List<LineItem> items) throws CreditCardExpiredException {
         Order order = new Order();
         order.setAmount(summarizeTotalOrderAmount(items));
-        order.setOrderNumber(UUID.randomUUID().toString()); // Todo: Order Number
+        order.setOrderNumber(UUID.randomUUID().toString());
         order.setCustomer(customer);
         order.setAddress(customer.getAddress());
-        order.setCreditCard(customer.getCreditCard());
+        final CreditCard creditCard = customer.getCreditCard();
+        validateCreditcard(creditCard);
+        order.setCreditCard(creditCard);
         order.setLineItems(Lists.newArrayList(items));
         order.setOrderDate(new Date(System.currentTimeMillis()));
-        try {
-            em.persist(order);
-            em.flush();
-            return order.getOrderNumber();
-        } catch (ConstraintViolationException e) {
+        em.persist(order);
+        em.flush();
+        sendMessageToOrderProcessor(order.getId());
+        return order.getOrderNumber();
+
+    }
+
+    private void validateCreditcard(final CreditCard creditCard) throws CreditCardExpiredException {
+        ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
+        Set<ConstraintViolation<CreditCard>> violations = factory.getValidator().validate(creditCard);
+        if (!violations.isEmpty()) {
             throw new CreditCardExpiredException();
         }
     }
@@ -74,16 +86,12 @@ public class OrderServiceBean implements OrderService {
 
     @Override
     public void cancelOrder(Order order) throws OrderNotCancelableException {
-        //Order foundOrder = em.find(Order.class, order);$
-        //TODO was wenn die Order noch nicht gespeichert wurde????
-        //auch hier sollte ein query nicht nötig sein. wenn noch nicht gespeichert, dann einfach verwerfen
         if (!order.isOpen()) {
             throw new OrderNotCancelableException();
         }
         order.setStatus(Status.canceled);
-        em.persist(order);//TODO muss concurrent modification abgefangen werden?
+        em.persist(order);
         em.flush();
-        sendMessageToQueue(order.getId());
     }
 
     private BigDecimal summarizeTotalOrderAmount(List<LineItem> items) {
@@ -95,7 +103,7 @@ public class OrderServiceBean implements OrderService {
         return amount;
     }
 
-    private void sendMessageToQueue(Integer orderId) {
+    private void sendMessageToOrderProcessor(Integer orderId) {
         Connection connection = null;
         try {
             connection = connectionFactory.createConnection();
@@ -106,12 +114,16 @@ public class OrderServiceBean implements OrderService {
         } catch (JMSException ex) {
             Logger.getLogger(OrderServiceBean.class.getName()).log(Level.SEVERE, null, ex);
         } finally {
-            if (null != connection) {
-                try {
-                    connection.close();
-                } catch (JMSException ex) {
-                    Logger.getLogger(OrderServiceBean.class.getName()).log(Level.SEVERE, null, ex);
-                }
+            closeConnection(connection);
+        }
+    }
+
+    private void closeConnection(Connection connection) {
+        if (null != connection) {
+            try {
+                connection.close();
+            } catch (JMSException ex) {
+                Logger.getLogger(OrderServiceBean.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
     }
