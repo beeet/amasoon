@@ -44,7 +44,7 @@ public class Order extends BaseEntity {
     private BigDecimal amount;
     @Enumerated(EnumType.STRING)
     private Status status;
-    @ManyToOne(optional = false, fetch = FetchType.LAZY)
+    @ManyToOne(optional = false, fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     private Customer customer;
     @Embedded
     @NotNull

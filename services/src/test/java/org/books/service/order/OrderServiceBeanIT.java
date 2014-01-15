@@ -108,7 +108,7 @@ public class OrderServiceBeanIT {
         CreditCard creditcard = new CreditCard();
         creditcard.setType(CreditCard.Type.MasterCard);
         creditcard.setNumber("5411222233334445");
-        creditcard.setExpirationDate(new Date(System.currentTimeMillis() + 10000));
+        creditcard.setExpirationDate(new Date(115,6,18));
         return creditcard;
     }
 
@@ -116,7 +116,7 @@ public class OrderServiceBeanIT {
         CreditCard creditcard = new CreditCard();
         creditcard.setType(CreditCard.Type.MasterCard);
         creditcard.setNumber("5411222233334445");
-        creditcard.setExpirationDate(new Date(System.currentTimeMillis() - 10000));
+        creditcard.setExpirationDate(new Date(113,6,18));
         return creditcard;
     }
 

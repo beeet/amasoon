@@ -1,5 +1,6 @@
 package org.books.persistence.order;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
 import org.books.persistence.BaseEntity;
@@ -10,7 +11,7 @@ public class LineItem extends BaseEntity {
 
     private Integer quantity = 0;
 
-    @ManyToOne(optional = false)
+    @ManyToOne(optional = false, cascade = CascadeType.PERSIST)
     private Book book;
 
     public Book getBook() {

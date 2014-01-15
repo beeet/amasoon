@@ -34,10 +34,11 @@ public class OrderServiceBean implements OrderService {
         order.setOrderDate(new Date(System.currentTimeMillis()));
         try {
             em.persist(order);
+            em.flush();
             return order.getOrderNumber();
         } catch (Exception e) {
             //TODO catch ValidationException o.ä.
-            throw new CreditCardExpiredException();
+            throw e;//new CreditCardExpiredException();
         }
     }
 
