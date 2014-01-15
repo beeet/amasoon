@@ -7,7 +7,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.NamedQuery;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Past;
 import org.books.persistence.BaseEntity;
 
 @Entity
@@ -28,7 +27,7 @@ public class Book extends BaseEntity {
     private String authors;
     @NotNull
     private String publisher;
-    @NotNull @Past
+    @NotNull
     private Date publicationDate;
     private String binding;
     private Integer numberOfPages;

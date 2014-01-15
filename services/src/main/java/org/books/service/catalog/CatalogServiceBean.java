@@ -23,7 +23,7 @@ public class CatalogServiceBean implements CatalogService {
             findBook(book.getIsbn());
             throw new BookAlreadyExistsException();
         } catch (BookNotFoundException e) {
-            em.persist(em.merge(book));
+            em.persist(book);
         }
     }
 
@@ -34,7 +34,7 @@ public class CatalogServiceBean implements CatalogService {
         try {
             return query.getSingleResult();
         } catch (NoResultException e) {
-            throw new BookNotFoundException(e);
+            throw new BookNotFoundException();
         }
     }
 

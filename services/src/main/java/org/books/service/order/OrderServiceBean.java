@@ -37,7 +37,7 @@ public class OrderServiceBean implements OrderService {
             return order.getOrderNumber();
         } catch (Exception e) {
             //TODO catch ValidationException o.ä.
-            throw new CreditCardExpiredException(e);
+            throw new CreditCardExpiredException();
         }
     }
 
@@ -48,7 +48,7 @@ public class OrderServiceBean implements OrderService {
         try {
             return query.getSingleResult();
         } catch (NoResultException e) {
-            throw new OrderNotFoundException(e);
+            throw new OrderNotFoundException();
         }
     }
 

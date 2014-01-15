@@ -37,18 +37,23 @@ public class CustomerServiceBeanIT {
         assertEquals(result.getEmail(), customer.getEmail());
     }
 
-    @Test(dependsOnMethods = "findCustomer", expectedExceptions = EJBException.class, expectedExceptionsMessageRegExp = ".*CustomerAlreadyExistsException.*")
-    public void addCustomer_CustomerAlreadyExistsException() throws Exception {
-        //arrange
-        Customer existingCustomer = customerService.findCustomer(customer.getEmail());
-        //act
-        customerService.addCustomer(existingCustomer);
+    @Test(expectedExceptions = CustomerAlreadyExistsException.class, dependsOnMethods = "findCustomer")
+    public void addCustomer_CustomerAlreadyExistsException() throws Throwable {
+        Customer foundCustomer = customerService.findCustomer(customer.getEmail());
+        try {
+            customerService.addCustomer(foundCustomer);
+        } catch (EJBException ejbException) {
+            throw ejbException.getCause();
+        }
     }
 
-    @Test(expectedExceptions = EJBException.class, expectedExceptionsMessageRegExp = ".*CustomerNotFoundException.*")
-    public void findCustomer_CustomerNotFoundException() throws Exception {
-        //act
-        customerService.findCustomer("notexisting@address.com");
+    @Test(expectedExceptions = CustomerNotFoundException.class)
+    public void findCustomer_CustomerNotFoundException() throws CustomerAlreadyExistsException, CustomerNotFoundException, Throwable {
+        try {
+            customerService.findCustomer("notexisting@address.com");
+        } catch (EJBException ejbException) {
+            throw ejbException.getCause();
+        }
     }
 
     @Test(dependsOnMethods = "findCustomer")

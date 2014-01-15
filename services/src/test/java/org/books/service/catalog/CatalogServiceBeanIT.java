@@ -1,12 +1,17 @@
 package org.books.service.catalog;
 
 import com.google.common.collect.Iterables;
+import java.math.BigDecimal;
+import java.sql.Date;
+import java.util.Calendar;
 import java.util.List;
+import java.util.UUID;
 import javax.ejb.EJBException;
 import javax.naming.InitialContext;
 import org.books.persistence.catalog.Book;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
+import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 public class CatalogServiceBeanIT {
@@ -16,7 +21,7 @@ public class CatalogServiceBeanIT {
     private Book book1;
     private Book book2;
 
-    // @BeforeClass
+    @BeforeClass
     public void init() throws Exception {
         catalogService = (CatalogService) new InitialContext().lookup(JNDI_NAME);
     }
@@ -39,14 +44,22 @@ public class CatalogServiceBeanIT {
         assertEquals(result.getPublisher(), book1.getPublisher());
     }
 
-    @Test(dependsOnMethods = "findBook", expectedExceptions = EJBException.class, expectedExceptionsMessageRegExp = ".*BookAlreadyExistsException.*")
-    public void addBook_AddTwice_BookAlreadyExistsExceptionExpected() throws Exception {
-        catalogService.addBook(book1);
+    @Test(expectedExceptions = BookAlreadyExistsException.class, dependsOnMethods = "findBook")
+    public void addBook_AddTwice_BookAlreadyExistsExceptionExpected() throws Throwable {
+        try {
+            catalogService.addBook(book1);
+        } catch (EJBException ejbException) {
+            throw ejbException.getCause();
+        }
     }
 
-    @Test(expectedExceptions = EJBException.class, expectedExceptionsMessageRegExp = ".*BookNotFoundException.*")
-    public void findBook_BookDoesNotExist_BookNotFoundExceptionExpected() throws Exception {
-        catalogService.findBook("gugus");
+    @Test(expectedExceptions = BookNotFoundException.class)
+    public void findBook_BookDoesNotExist_BookNotFoundExceptionExpected() throws Throwable {
+        try {
+            catalogService.findBook("gugus");
+        } catch (EJBException ejbException) {
+            throw ejbException.getCause();
+        }
     }
 
     @Test(dependsOnMethods = "addBook")
@@ -81,19 +94,31 @@ public class CatalogServiceBeanIT {
 
     private static Book createBook() {
         Book book = new Book();
-        book.setIsbn("0471777102");
+        book.setIsbn(UUID.randomUUID().toString());
         book.setTitle("Professional Java JDK 6 Edition");
         book.setAuthors("W. Clay Richardson, Donald Avondolio, Scot Schrager, Mark W. Mitchell, Jeff Scanlon");
         book.setPublisher("Wrox");
+        book.setBinding("Paperback");
+        book.setNumberOfPages(150);
+        book.setPrice(BigDecimal.valueOf(23, 99));
+        Calendar c = Calendar.getInstance();
+        c.set(2008, 02, 02);
+        book.setPublicationDate(new Date(c.getTimeInMillis()));
         return book;
     }
 
     private static Book createAnotherBook() {
         Book book = new Book();
-        book.setIsbn("0471777103");
+        book.setIsbn(UUID.randomUUID().toString());
         book.setTitle("Java for Dummies");
         book.setAuthors("Bart Simpson");
         book.setPublisher("Apress");
+        book.setBinding("Paperback");
+        book.setNumberOfPages(1150);
+        book.setPrice(BigDecimal.valueOf(64, 99));
+        Calendar c = Calendar.getInstance();
+        c.set(2006, 02, 02);
+        book.setPublicationDate(new Date(c.getTimeInMillis()));
         return book;
     }
 }

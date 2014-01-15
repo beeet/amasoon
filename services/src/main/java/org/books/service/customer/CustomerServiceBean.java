@@ -19,7 +19,7 @@ public class CustomerServiceBean implements CustomerService {
             findCustomer(customer.getEmail());
             throw new CustomerAlreadyExistsException();
         } catch (CustomerNotFoundException e) {
-            em.persist(em.merge(customer));
+            em.persist(customer);
         }
     }
 
@@ -30,7 +30,7 @@ public class CustomerServiceBean implements CustomerService {
         try {
             return query.getSingleResult();
         } catch (NoResultException e) {
-            throw new CustomerNotFoundException(e);
+            throw new CustomerNotFoundException();
         }
     }
 
