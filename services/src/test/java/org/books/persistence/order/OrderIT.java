@@ -1,10 +1,9 @@
 package org.books.persistence.order;
 
-import com.google.common.collect.Sets;
+import com.google.common.collect.Lists;
 import java.math.BigDecimal;
 import java.sql.Date;
 import java.util.List;
-import java.util.Set;
 import java.util.UUID;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -90,7 +89,7 @@ public class OrderIT {
         CreditCard creditcard = createCreditcard();
         Book book = createBook();
 
-        Set<LineItem> lineItems = Sets.newHashSet();
+        List<LineItem> lineItems = Lists.newArrayList();
         final LineItem lineItem = new LineItem();
         lineItem.setBook(book);
         lineItems.add(lineItem);
@@ -131,7 +130,7 @@ public class OrderIT {
         return customer;
     }
 
-    private Order createOrder(Customer customer, Address address, CreditCard creditcard, Set<LineItem> lineItems) {
+    private Order createOrder(Customer customer, Address address, CreditCard creditcard, List<LineItem> lineItems) {
         Order order = new Order();
         order.setOrderDate(new Date(System.currentTimeMillis()));
         order.setAmount(BigDecimal.TEN);
