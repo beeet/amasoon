@@ -5,7 +5,16 @@ import java.math.BigDecimal;
 import java.sql.Date;
 import java.util.List;
 import java.util.UUID;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.annotation.Resource;
 import javax.ejb.Stateless;
+import javax.jms.Connection;
+import javax.jms.ConnectionFactory;
+import javax.jms.JMSException;
+import javax.jms.MapMessage;
+import javax.jms.Queue;
+import javax.jms.Session;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
@@ -19,6 +28,10 @@ import org.books.persistence.order.Order.Status;
 @Stateless(name = "OrderService")
 public class OrderServiceBean implements OrderService {
 
+    @Resource(lookup = "jms/orderQueueFactory")
+    private ConnectionFactory connectionFactory;
+    @Resource(lookup = "jms/orderQueue")
+    private Queue orderQueue;
     @PersistenceContext
     EntityManager em;
 
@@ -68,12 +81,9 @@ public class OrderServiceBean implements OrderService {
             throw new OrderNotCancelableException();
         }
         order.setStatus(Status.canceled);
-        try {
-            em.persist(order);//TODO muss concurrent modification abgefangen werden?
-            em.flush();
-        } catch (ConstraintViolationException e) {
-            throw e;
-        }
+        em.persist(order);//TODO muss concurrent modification abgefangen werden?
+        em.flush();
+        sendMessageToQueue(order.getId());
     }
 
     private BigDecimal summarizeTotalOrderAmount(List<LineItem> items) {
@@ -83,6 +93,23 @@ public class OrderServiceBean implements OrderService {
             amount = amount.add(item.getBook().getPrice().multiply(quantity));
         }
         return amount;
+    }
+
+    private void sendMessageToQueue(Integer orderId) {
+        Connection connection = null;
+        try {
+            connection = connectionFactory.createConnection();
+            Session session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
+            MapMessage message = session.createMapMessage();
+            message.setInt("orderId", orderId);
+            session.createProducer(orderQueue).send(message);
+        } catch (JMSException ex) {
+            Logger.getLogger(OrderServiceBean.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            if (null != connection) {
+                //connection.close();
+            }
+        }
     }
 
 }
