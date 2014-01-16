@@ -48,5 +48,5 @@ public class OrderProcessorBean implements MessageListener {
             order.setStatus(Order.Status.closed);
         }
     }
-
+    
 }
