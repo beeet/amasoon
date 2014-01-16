@@ -3,8 +3,6 @@ package org.books.persistence.catalog;
 import java.math.BigDecimal;
 import java.sql.Date;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
 import javax.persistence.NamedQuery;
 import javax.validation.constraints.NotNull;
 import org.books.persistence.BaseEntity;
@@ -16,9 +14,6 @@ public class Book extends BaseEntity {
     public final static String findByISBN = "Book.findByISBN";
     public final static String findByKeywords = "Book.findByKeywords";
 
-    @Id
-    @GeneratedValue
-    protected Integer id;
     @NotNull
     private String isbn;
     @NotNull
@@ -33,10 +28,6 @@ public class Book extends BaseEntity {
     private Integer numberOfPages;
     @NotNull
     private BigDecimal price;
-
-    public Integer getId() {
-        return id;
-    }
 
     public String getIsbn() {
         return isbn;
