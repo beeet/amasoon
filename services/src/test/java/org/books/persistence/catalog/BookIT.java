@@ -104,7 +104,7 @@ public class BookIT {
         assertEquals("Paperback", book.getBinding());
         assertEquals("0131872486", book.getIsbn());
         assertEquals(new Integer("1150"), book.getNumberOfPages());
-        assertEquals(BigDecimal.valueOf(64, 99), book.getPrice());
+        assertEquals(new BigDecimal("64.99"), book.getPrice());
         assertEquals("2006-03-02", book.getPublicationDate().toString());
         assertEquals("Prentice Hall PTR", book.getPublisher());
     }

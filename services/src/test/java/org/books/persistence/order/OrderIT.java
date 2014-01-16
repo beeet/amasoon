@@ -117,8 +117,18 @@ public class OrderIT {
         order.setOrderNumber(UUID.randomUUID().toString());
         order.setCustomer(customer);
         order.setAddress(new Address());
-        order.setCreditCard(new CreditCard());
+        order.setCreditCard(createCreditcard());
+        order.setLineItems(createLineItems(createBook()));
         return order;
+    }
+    
+     private List<LineItem> createLineItems(Book book) {
+        List<LineItem> lineItems = Lists.newArrayList();
+        final LineItem lineItem = new LineItem();
+        lineItem.setBook(book);
+        lineItem.setQuantity(1);
+        lineItems.add(lineItem);
+        return lineItems;
     }
 
     private Customer createCustomer(String name, String email) {
@@ -128,6 +138,14 @@ public class OrderIT {
         customer.setAddress(new Address());
         customer.setCreditCard(new CreditCard());
         return customer;
+    }
+    
+        private CreditCard createCreditcard() {
+        CreditCard creditcard = new CreditCard();
+        creditcard.setType(CreditCard.Type.MasterCard);
+        creditcard.setNumber("5411222233334445");
+        creditcard.setExpirationDate(new Date(115, 6, 18));
+        return creditcard;
     }
 
     private Order createOrder(Customer customer, Address address, CreditCard creditcard, List<LineItem> lineItems) {
@@ -142,14 +160,6 @@ public class OrderIT {
         order.setStatus(Order.Status.open);
         order.setAmount(BigDecimal.valueOf(52L));
         return order;
-    }
-
-    private CreditCard createCreditcard() {
-        CreditCard creditcard = new CreditCard();
-        creditcard.setType(CreditCard.Type.MasterCard);
-        creditcard.setNumber("5411222233334445");
-        creditcard.setExpirationDate(new Date(System.currentTimeMillis()));
-        return creditcard;
     }
 
     private Address createAddress() {
