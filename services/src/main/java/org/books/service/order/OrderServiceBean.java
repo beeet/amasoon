@@ -41,19 +41,20 @@ public class OrderServiceBean implements OrderService {
 
     @Override
     public String placeOrder(Customer customer, List<LineItem> items) throws CreditCardExpiredException {
-        Order order = new Order();
-        order.setAmount(summarizeTotalOrderAmount(items));
-        order.setOrderNumber(UUID.randomUUID().toString());
-        order.setCustomer(customer);
-        order.setAddress(customer.getAddress());
         final CreditCard creditCard = customer.getCreditCard();
         validateCreditcard(creditCard);
+        
+        Order order = new Order();
+        order.setOrderNumber(UUID.randomUUID().toString());
+        order.setOrderDate(new Date(System.currentTimeMillis()));
+        order.setCustomer(customer);
+        order.setAddress(customer.getAddress());
         order.setCreditCard(creditCard);
         order.setLineItems(Lists.newArrayList(items));
-        order.setOrderDate(new Date(System.currentTimeMillis()));
+        order.setAmount(summarizeTotalOrderAmount(items));
         em.persist(order);
-        em.persist(customer);
         em.flush();
+        
         sendMessageToOrderProcessor(order.getId());
         return order.getOrderNumber();
 

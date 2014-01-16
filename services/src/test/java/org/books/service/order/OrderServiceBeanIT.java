@@ -35,13 +35,12 @@ public class OrderServiceBeanIT {
     @Test
     public void placeOrder() throws Exception {
         //arrange
-        Book book = createBook();
         Address address = createAddress();
         CreditCard creditCard = createCreditcard();
         customer = createCustomer("Beat Breu", "beat.breu@radsport.ch");
         customer.setAddress(address);
         customer.setCreditCard(creditCard);
-        List<LineItem> lineItems = createLineItems(book);
+        List<LineItem> lineItems = createLineItems(createBook());
         //act
         orderNumber = orderService.placeOrder(customer, lineItems);
     }
@@ -84,7 +83,10 @@ public class OrderServiceBeanIT {
     @Test(dependsOnMethods = "placeOrder")
     public void getOrders() throws Exception {
         //act
-        List<Order> result = orderService.getOrders(customer);
+        //TODO
+        Order order = orderService.findOrder(orderNumber);
+        List<Order> result = orderService.getOrders(order.getCustomer());
+    //    List<Order> result = orderService.getOrders(customer);
         //assert
         assertEquals(result.size(), 1);
     }
