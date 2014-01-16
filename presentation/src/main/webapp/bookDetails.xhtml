@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets" 
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <h:head>
+        <title>#{translations.bookDetailsTitle}</title>
+    </h:head>
+
+    <h:body>
+
+        <ui:composition template="./resources/userTemplate.xhtml">
+
+            <ui:define name="content">
+                <ui:include src="./resources/pageTitle.xhtml" >
+                    <ui:param name="title" value="#{catalogBean.selectedBook.title}" />
+                </ui:include>
+
+                <h:form id="main">
+                    <br/>
+                    <h:panelGrid class="table table-hover" columns="2">
+                        <h:outputText value="#{translations.authors}"/>
+                        <h:outputText value="#{catalogBean.selectedBook.authors}"/>
+                        <h:outputText value="#{translations.isbn}"/>
+                        <h:outputText value="#{catalogBean.selectedBook.isbn}"/>
+                        <h:outputText value="#{translations.publisher}"/>
+                        <h:outputText value="#{catalogBean.selectedBook.publisher}"/>
+                        <h:outputText value="#{translations.publicationDate}"/>
+                        <h:outputText value="#{catalogBean.selectedBook.publicationDate}">
+                            <f:convertDateTime type="date" />
+                        </h:outputText>
+                        <h:outputText value="#{translations.binding}"/>
+                        <h:outputText value="#{catalogBean.selectedBook.binding}"/>
+                        <h:outputText value="#{translations.numberOfPages}"/>
+                        <h:outputText value="#{catalogBean.selectedBook.numberOfPages}"/>
+                        <h:outputText value="#{translations.price}"/>
+                        <h:outputText value="#{catalogBean.selectedBook.price}">
+                            <f:convertNumber type="currency" currencySymbol="Fr." locale="de_CH" />
+                        </h:outputText>
+                        <h:outputText/>
+                        <h:commandLink class="btn btn-info btn-small"  action="#{orderBean.addToCart(catalogBean.selectedBook)}">
+                            <i class="icon-shopping-cart icon-white" /> #{translations.addToCart}
+                        </h:commandLink>
+                    </h:panelGrid>
+                    <br/>
+                    <h:commandButton class="btn" action="catalogSearch" value="#{translations.back}"/>
+                </h:form>
+
+            </ui:define>
+
+        </ui:composition>
+
+    </h:body>
+
+</html>

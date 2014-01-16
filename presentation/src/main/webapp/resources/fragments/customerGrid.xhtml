@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <h:head>
+        <h:outputStylesheet name="./css/bootstrap.css"/>
+        <h:outputStylesheet name="./css/layout.css"/>
+    </h:head>
+
+    <h:body>
+        <ui:composition>
+            <h5>#{title}</h5>
+            <h:panelGrid class="table table-condensed-fixwidth" columns="3">
+
+                <h:outputText value="#{translations.customerName}"/>
+                <h:inputText id="name" value="#{customerBean.customer.name}" required="true" 
+                             requiredMessage="#{translations.customerNameRequired}" disabled="#{readonly}"/>
+                <h:message for="name" errorClass="error" styleClass="error"/>
+
+                <h:outputText value="#{translations.customerEmail}"/>
+                <h:inputText id="email" value="#{customerBean.customer.email}" required="true" 
+                             requiredMessage="#{translations.customerEMailRequired}" disabled="#{readonly}">
+                    <f:validator validatorId="ch.bfh.amasoon.components.EmailValidator"/>
+                    <f:ajax event="blur" execute="@this" render="emailMessage"/>
+                </h:inputText>
+                <h:message id="emailMessage" for="email" errorClass="error" styleClass="error"/>
+
+                <h:outputText value="#{translations.customerPassword}" rendered="#{not readonly}" />
+                <h:inputSecret id="password" value="#{customerBean.customer.password}" required="true" 
+                               requiredMessage="#{translations.customerPasswordRequired}" rendered="#{not readonly}">
+                    <f:validator validatorId="ch.bfh.amasoon.components.PasswordValidator"/>
+                    <f:ajax event="blur" render="passwordMessage"/>
+                </h:inputSecret>
+                <h:message id="passwordMessage" for="password" errorClass="error" styleClass="error" rendered="#{not readonly}" />
+
+            </h:panelGrid>
+        </ui:composition>
+    </h:body>
+</html>

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:ui="http://java.sun.com/jsf/facelets">
+
+    <h:head/>
+
+    <h:body>
+        <ui:composition>
+            <h:form id="search" class="search_form">
+                <h:inputText styleClass="input-xxlarge" style="margin-top: 9px" id="keywords" value="#{catalogBean.keywords}"/>
+                <h:commandButton class="btn btn-primary" action="#{catalogBean.searchBooks}" value="#{translations.search}" type="submit"/>&#xa0;
+                <h:message for="keywords" styleClass="error"/>&#xa0;
+            </h:form>
+        </ui:composition>
+    </h:body>
+
+</html>

@@ -1,0 +1,22 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:ui="http://java.sun.com/jsf/facelets">
+
+    <h:head/> 
+
+    <h:body>
+        <ui:composition>
+            <h:form>
+                <h:commandLink class="btn" action="loginPage" rendered="#{not customerBean.isUserLoggedIn()}">
+                    <i class="icon-user"/> #{translations.login} 
+                </h:commandLink>
+                <h:commandLink class="btn" action="#{customerBean.logout()}" rendered="#{customerBean.isUserLoggedIn()}">
+                    <i class="icon-user"/> #{translations.logout} 
+                </h:commandLink>
+            </h:form>
+        </ui:composition>
+    </h:body>
+
+</html>

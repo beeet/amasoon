@@ -1,0 +1,85 @@
+/*!
+ * for layouting frame
+ *
+ */
+
+#top {
+    position: relative;
+    padding: 5px;
+    margin: 10px 10px 10px 10px;
+    height: 70px;
+}
+
+#bottom_left {
+    float: left;
+    position: relative;
+    padding: 5px;
+    margin: 10px 10px 10px 10px;
+    height: 50px;
+}
+
+#bottom_right {
+    float: right;
+    position: relative;
+    padding: 5px;
+    margin: 10px 10px 10px 10px;
+    height: 50px;
+}
+
+#left {
+    float: left;
+    padding: 5px;
+    width: 150px;
+}
+
+#right {
+    float: right;
+    padding: 5px;
+    width: 150px;
+}
+
+.center_content {
+    position: relative;
+    padding: 5px;
+    margin: 10px 10px 10px 10px;
+    min-height: 400px;
+}
+
+.bottom_content {
+    position: relative;
+    padding: 5px;
+    margin: 30px 10px 10px 10px;
+}
+
+.left_content {
+    padding: 5px;
+    margin: 10px 10px 10px 10px;
+}
+
+.right_content {
+    padding: 5px;
+    margin: 10px 10px 10px 10px;
+}
+
+.search_form {
+    text-align: center;
+}
+
+.table-condensed-fixwidth td {
+    padding: 4px 5px;
+    width: 150px;
+}
+
+.error {
+    color: red;
+}
+
+.info {
+    color: #0081c2;
+}
+
+.admin_logo{
+    margin-right: 90px;
+}
+
+

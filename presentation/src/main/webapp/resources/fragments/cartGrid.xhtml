@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:ext="http://amasoon.ch/jsf/taglib">
+
+    <h:head />
+
+    <h:body>
+        <ui:composition>
+            <h:form id="cartGridForm">
+                <h:dataTable class="table table-striped" id="data" value="#{orderBean.lineItems}" var="lineItem" rendered="#{not orderBean.cartEmpty}">
+                    <h:column>
+                        <f:facet name="header">
+                            <h:outputText value="#{translations.title}"/>
+                        </f:facet>
+                        <h:outputText value="#{lineItem.book.title}"/>
+                        <f:facet name="footer">
+                            <h:outputText value="#{translations.cartGridTotal}"  style="font-weight:bold"/>
+                        </f:facet>
+                    </h:column>
+                    <h:column>
+                        <f:facet name="header">
+                            <h:outputText value="#{translations.price}"/>
+                        </f:facet>
+                        <h:outputText value="#{orderBean.getLineItemPrice(lineItem)}">
+                            <f:convertNumber type="currency" currencySymbol="CHF" locale="de_CH" />
+                        </h:outputText>
+                        <f:facet name="footer">
+                            <h:outputText value="#{orderBean.totalPrice}" style="font-weight:bold">
+                                <f:convertNumber type="currency" currencySymbol="CHF" locale="de_CH" />
+                            </h:outputText>
+                        </f:facet>
+                    </h:column>
+                    <h:column>
+                        <f:facet name="header">
+                            <h:outputText value="#{translations.cartGridQuantity}"/>
+                        </f:facet>
+                        <ext:selectNumber id="quantity" min="1" max="50" value="#{lineItem.quantity}" rendered="#{not readonly}" />
+                        <h:outputText value="#{lineItem.quantity}" rendered="#{readonly}" />
+                    </h:column>
+                    <h:column rendered="#{not readonly}">
+                        <h:commandLink class="btn btn-info btn-small" action="#{orderBean.removeFromCart(lineItem)}" value="#{translations.cartGridRemove}" immediate="true" />
+                    </h:column>
+
+                </h:dataTable>
+                <h:outputText value="#{translations.cartGridEmptyCart}" rendered="#{orderBean.cartEmpty}" />
+            </h:form>
+        </ui:composition>
+    </h:body>
+
+</html>

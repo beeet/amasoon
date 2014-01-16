@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:composites="http://xmlns.jcp.org/jsf/composite/composites">
+
+    <h:head>
+        <title>#{translations.loginPageTitle}</title>
+        <f:view locale="#{userLocale.locale}"/>
+    </h:head>
+
+    <h:body>
+        <ui:composition template="./resources/userTemplate.xhtml">
+            <ui:define name="content">
+                <h:form styleClass="form-horizontal">
+
+                    <div class="control-group">
+                        <h:outputLabel value="#{translations.loginPageEmail}" styleClass="control-label"/>
+                        <div class="controls">
+                            <composites:email email="#{customerBean.email}"/>
+                        </div>
+                    </div>
+
+                    <div class="control-group">
+                        <h:outputLabel value="#{translations.loginPagePassword}" styleClass="control-label"/>
+                        <div class="controls">
+                            <composites:password password="#{customerBean.password}"/>
+                        </div>
+                    </div>
+
+                    <div class="control-group">
+                        <div class="controls">
+                            <h:messages globalOnly="true" errorClass="error" styleClass="error"/>
+                        </div>
+                    </div>
+
+                    <div class="control-group">
+                        <div class="controls">
+                            <h:commandButton class="btn btn-primary" value="#{translations.login}" 
+                                             action="#{customerBean.login}" type="submit"/>
+                        </div>
+                    </div>
+
+                    <br/>
+
+                    <div class="control-group">
+                        <div class="controls">
+                            <h:outputText value="#{translations.loginPageCreateAccount}"/>&#xa0;    
+                            <h:commandLink value="#{translations.loginPageLinkToCreateAccount}" action="registrationPage" immediate="true"/><br/>
+                        </div>
+                    </div>
+                </h:form>
+            </ui:define>
+        </ui:composition>
+    </h:body>
+
+</html>

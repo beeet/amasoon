@@ -10,5 +10,6 @@
     <modules>
         <module>presentation</module>
         <module>services</module>
+        <module>ear</module>
     </modules>
 </project>

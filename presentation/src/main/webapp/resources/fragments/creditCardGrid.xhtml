@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ext="http://amasoon.ch/jsf/taglib"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+
+    <h:head>
+        <h:outputStylesheet name="./css/bootstrap.css"/>
+        <h:outputStylesheet name="./css/layout.css"/>
+    </h:head>
+
+    <h:body>
+        <ui:composition>
+            <h5>#{title}</h5>
+            <h:panelGrid class="table table-condensed-fixwidth" columns="3">
+
+                <h:outputText value="#{translations.creditCardCardType}"/>
+                <h:selectOneMenu id="cardType" value="#{customerBean.customer.creditCard.type}" required="true"
+                                 requiredMessage="#{translations.creditCardCardTypeRequired}" disabled="#{readonly}">
+                    <f:selectItem itemValue="#{null}"/>
+                    <f:selectItems value="#{customerBean.cardTypes}"/>
+                </h:selectOneMenu>
+                <h:message for="cardType" styleClass="error"/>
+
+                <h:outputText value="#{translations.creditCardCardNumber}"/>
+                <h:inputText id="cardNumber" value="#{customerBean.customer.creditCard.number}" required="true"
+                             requiredMessage="#{translations.creditCardCardNumberRequired}" size="20" disabled="#{readonly}">
+                    <ext:validateCreditCard cardTypeId="cardType"/>
+                </h:inputText>
+                <h:message for="cardNumber" styleClass="error"/>
+
+                <h:outputText value="#{translations.creditCardExpirationDate}"/>
+                <ext:expirationDate id="expirationDate" years="5" value="#{customerBean.customer.creditCard.expirationDate}" rendered="#{not readonly}"/>
+                <h:inputText value="#{customerBean.customer.creditCard.expirationDate}" rendered="#{readonly}" disabled="#{readonly}" >
+                    <f:convertDateTime pattern="MM-yyyy" />
+                </h:inputText>
+                <h:message for="expirationDate" styleClass="error"/>
+
+            </h:panelGrid>
+        </ui:composition>
+    </h:body>
+</html>

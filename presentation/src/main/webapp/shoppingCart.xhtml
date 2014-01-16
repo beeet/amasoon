@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+
+    <h:head>
+        <title>#{translations.shoppingCartTitle}</title>
+    </h:head>
+
+    <h:body>
+        <ui:composition template="./resources/userTemplate.xhtml">
+            <ui:define name="content">
+                <ui:include src="./resources/fragments/cartGrid.xhtml" >
+                    <ui:param name="readonly" value="false" />
+                </ui:include>
+                <h:form id="shoppingCartForm">
+                    <h:commandButton class="btn" action="catalogSearch" value="#{translations.back}"/>&#xa0;
+
+                    <h:commandButton class="btn btn-primary" value="#{translations.shoppingCartCeckOut}" 
+                                     action="loginPage" 
+                                     type="submit" rendered="#{not orderBean.cartEmpty and not customerBean.userLoggedIn}"/>
+                    <h:commandButton class="btn btn-primary" value="#{translations.shoppingCartCeckOut}" 
+                                     action="orderSummary" 
+                                     type="submit" rendered="#{not orderBean.cartEmpty and customerBean.userLoggedIn}"/>
+                </h:form>
+            </ui:define>
+        </ui:composition>
+    </h:body>
+
+</html>
