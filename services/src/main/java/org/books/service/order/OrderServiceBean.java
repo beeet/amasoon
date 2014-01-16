@@ -52,6 +52,7 @@ public class OrderServiceBean implements OrderService {
         order.setLineItems(Lists.newArrayList(items));
         order.setOrderDate(new Date(System.currentTimeMillis()));
         em.persist(order);
+        em.persist(customer);
         em.flush();
         sendMessageToOrderProcessor(order.getId());
         return order.getOrderNumber();

@@ -14,6 +14,7 @@ import org.books.persistence.customer.CreditCard;
 import org.books.persistence.customer.Customer;
 import org.books.persistence.order.LineItem;
 import org.books.persistence.order.Order;
+import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertNotNull;
 import static org.testng.Assert.assertTrue;
 import org.testng.annotations.BeforeClass;
@@ -23,6 +24,7 @@ public class OrderServiceBeanIT {
 
     private static final String JNDI_NAME = "java:global/services/OrderService";
     private OrderService orderService;
+    private Customer customer;
     private String orderNumber;
 
     @BeforeClass
@@ -36,7 +38,7 @@ public class OrderServiceBeanIT {
         Book book = createBook();
         Address address = createAddress();
         CreditCard creditCard = createCreditcard();
-        Customer customer = createCustomer("Beat Breu", "beat.breu@radsport.ch");
+        customer = createCustomer("Beat Breu", "beat.breu@radsport.ch");
         customer.setAddress(address);
         customer.setCreditCard(creditCard);
         List<LineItem> lineItems = createLineItems(book);
@@ -50,13 +52,13 @@ public class OrderServiceBeanIT {
         Book book = createBook();
         Address address = createAddress();
         CreditCard creditCard = createInvalidCreditCard();
-        Customer customer = createCustomer("Godi Schmutz", "godi.schmutz@radsport.ch");
-        customer.setAddress(address);
-        customer.setCreditCard(creditCard);
+        Customer cust = createCustomer("Godi Schmutz", "godi.schmutz@radsport.ch");
+        cust.setAddress(address);
+        cust.setCreditCard(creditCard);
         List<LineItem> lineItems = createLineItems(book);
         //act
         try {
-            orderService.placeOrder(customer, lineItems);
+            orderService.placeOrder(cust, lineItems);
         } catch (EJBException ejbException) {
             throw ejbException.getCause();
         }
@@ -79,10 +81,12 @@ public class OrderServiceBeanIT {
         }
     }
 
-    @Test
-    public void getOrders() {
-        List<Order> result = orderService.getOrders(new Customer());
-        //TODO
+    @Test(dependsOnMethods = "placeOrder")
+    public void getOrders() throws Exception {
+        //act
+        List<Order> result = orderService.getOrders(customer);
+        //assert
+        assertEquals(result.size(), 1);
     }
 
     @Test
@@ -98,11 +102,11 @@ public class OrderServiceBeanIT {
         //arrange
         Address address = createAddress();
         CreditCard creditCard = createCreditcard();
-        Customer customer = createCustomer("Rudi Rüssel", "rudi.ruessel@radsport.ch");
-        customer.setAddress(address);
-        customer.setCreditCard(creditCard);
+        Customer cust = createCustomer("Rudi Rüssel", "rudi.ruessel@radsport.ch");
+        cust.setAddress(address);
+        cust.setCreditCard(creditCard);
         List<LineItem> lineItems = createLineItems(createBook());
-        Order order = createOrder(customer, address, creditCard, lineItems);
+        Order order = createOrder(cust, address, creditCard, lineItems);
         //act
         orderService.cancelOrder(order);
     }
@@ -122,12 +126,12 @@ public class OrderServiceBeanIT {
 
     private Customer createCustomer(String name, String email) {
         Random randomGenerator = new Random();
-        Customer customer = new Customer();
-        customer.setEmail(randomGenerator.nextInt(10000000) + email);
-        customer.setName(name);
-        customer.setAddress(new Address());
-        customer.setCreditCard(new CreditCard());
-        return customer;
+        Customer cust = new Customer();
+        cust.setEmail(randomGenerator.nextInt(10000000) + email);
+        cust.setName(name);
+        cust.setAddress(new Address());
+        cust.setCreditCard(new CreditCard());
+        return cust;
     }
 
     private CreditCard createCreditcard() {

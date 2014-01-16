@@ -3,16 +3,9 @@
     <persistence-unit name="bookstore" transaction-type="JTA">
         <provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
         
-        <!-- ACHTUNG: Konfiguration nur für Standalone -->
-        <jta-data-source>jdbc/bookstore</jta-data-source>
-        <property name="javax.persistence.jdbc.url" value="jdbc:derby://localhost:1527/bookstore"/>
-        <property name="javax.persistence.jdbc.password" value="app"/>
-        <property name="javax.persistence.jdbc.user" value="app"/>
-        <property name="javax.persistence.jdbc.driver" value="org.apache.derby.jdbc.ClientDriver"/>
-        <!---->
         
-        
-        
+               <jta-data-source>jdbc/bookstore</jta-data-source>
+               
         <class>org.books.persistence.customer.Customer</class>
         <class>org.books.persistence.catalog.Book</class>
         <class>org.books.persistence.order.LineItem</class>
