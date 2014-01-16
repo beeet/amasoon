@@ -1,7 +1,5 @@
 package org.books.persistence.catalog;
 
-import org.books.persistence.catalog.BookQueryFactory;
-import org.books.persistence.catalog.Book;
 import java.math.BigDecimal;
 import java.sql.Date;
 import java.util.Arrays;
@@ -73,7 +71,7 @@ public class BookIT {
         book1.setPublisher("Prentice Hall PTR");
         book1.setBinding("Paperback");
         book1.setNumberOfPages(1150);
-        book1.setPrice(BigDecimal.valueOf(64, 99));
+        book1.setPrice(new BigDecimal("64.99"));
         Calendar c = Calendar.getInstance();
         c.set(2006, 02, 02);
         book1.setPublicationDate(new Date(c.getTimeInMillis()));
@@ -83,6 +81,11 @@ public class BookIT {
         book2.setTitle("Professional Java JDK 6 Edition");
         book2.setAuthors("W. Clay Richardson, Donald Avondolio, Scot Schrager, Mark W. Mitchell, Jeff Scanlon");
         book2.setPublisher("Wrox");
+        book2.setBinding("Paperback");
+        book2.setNumberOfPages(130);
+        book2.setPrice(new BigDecimal("52.99"));
+        book2.setPublicationDate(new Date(c.getTimeInMillis()));
+
         em.persist(book2);
         book1Id = book1.getId();
         book2Id = book2.getId();
