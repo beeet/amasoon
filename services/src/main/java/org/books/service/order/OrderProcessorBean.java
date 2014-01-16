@@ -4,6 +4,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.annotation.Resource;
 import javax.ejb.ActivationConfigProperty;
+import javax.ejb.EJB;
 import javax.ejb.MessageDriven;
 import javax.ejb.Timeout;
 import javax.ejb.Timer;
@@ -22,6 +23,8 @@ import org.books.persistence.order.Order;
 })
 public class OrderProcessorBean implements MessageListener {
 
+    @EJB
+    private MailService mailService;
     @PersistenceContext
     private EntityManager em;
 
@@ -47,6 +50,7 @@ public class OrderProcessorBean implements MessageListener {
         if (order.isOpen()) {
             order.setStatus(Order.Status.closed);
         }
+        mailService.sendMail(order);
     }
-    
+
 }

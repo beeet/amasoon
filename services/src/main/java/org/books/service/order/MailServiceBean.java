@@ -3,13 +3,15 @@ package org.books.service.order;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.annotation.Resource;
-import javax.ejb.Stateless;
+import javax.ejb.Singleton;
+import javax.ejb.Startup;
 import javax.mail.MessagingException;
 import javax.mail.Session;
 import javax.mail.Transport;
 import org.books.persistence.order.Order;
 
-@Stateless(name = "MailService")
+@Singleton(name = "MailService")
+@Startup
 public class MailServiceBean implements MailService {
 
     public static final char NEWLINE = '\n';
