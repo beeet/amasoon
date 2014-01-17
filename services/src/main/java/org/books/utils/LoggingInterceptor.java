@@ -15,6 +15,7 @@ public class LoggingInterceptor {
             Logger.getLogger(classname(context)).log(Level.INFO, methodname(context));
         } catch (Exception e) {
             Logger.getLogger(classname(context)).log(Level.SEVERE, methodname(context), e);
+            throw e;
         }
         return proceed;
     }

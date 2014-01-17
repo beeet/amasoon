@@ -83,10 +83,8 @@ public class OrderServiceBeanIT {
     @Test(dependsOnMethods = "placeOrder")
     public void getOrders() throws Exception {
         //act
-        //TODO
         Order order = orderService.findOrder(orderNumber);
         List<Order> result = orderService.getOrders(order.getCustomer());
-    //    List<Order> result = orderService.getOrders(customer);
         //assert
         assertEquals(result.size(), 1);
     }

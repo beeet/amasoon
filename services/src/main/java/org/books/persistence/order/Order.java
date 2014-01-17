@@ -9,7 +9,6 @@ import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
@@ -43,7 +42,7 @@ public class Order extends BaseEntity {
     private BigDecimal amount;
     @Enumerated(EnumType.STRING)
     private Status status;
-    @ManyToOne(optional = false, fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+    @ManyToOne(optional = false, cascade = CascadeType.PERSIST)
     private Customer customer;
     @Embedded
     @NotNull
@@ -54,11 +53,10 @@ public class Order extends BaseEntity {
     @OneToMany(cascade = CascadeType.ALL)
     private List<LineItem> lineItems = Lists.newArrayList();
 
-    
-    public Order(){
-         this.status = Status.open;
+    public Order() {
+        this.status = Status.open;
     }
-    
+
     public Address getAddress() {
         return address;
     }

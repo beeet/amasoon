@@ -76,20 +76,20 @@ public class CatalogServiceBeanIT {
             distinctedBooks.put(book.getTitle(), book.getAuthors());
         }
         assertEquals(distinctedBooks.size(), 1);
-        assertTrue(distinctedBooks.containsKey("Professional Java JDK 6 Edition"));
+        assertTrue(distinctedBooks.containsKey("Professional Java JDK 6 Edition Simpson"));
     }
 
     @Test(dependsOnMethods = "searchBooks_FindOneBook")
     public void searchBooks_FindTwoBooks() throws Exception {
         //act
-        List<Book> foundBooks = catalogService.searchBooks("Java");
+        List<Book> foundBooks = catalogService.searchBooks("Simpson");
         //assert
         Map<String, String> distinctedBooks = new HashMap<>();
         for (Book book : foundBooks) {
             distinctedBooks.put(book.getTitle(), book.getAuthors());
         }
         assertEquals(distinctedBooks.size(), 2);
-        assertTrue(distinctedBooks.containsKey("Professional Java JDK 6 Edition"));
+        assertTrue(distinctedBooks.containsKey("Professional Java JDK 6 Edition Simpson"));
         assertTrue(distinctedBooks.containsKey("Java for Dummies"));
     }
 
@@ -104,7 +104,7 @@ public class CatalogServiceBeanIT {
     private static Book createBook() {
         Book book = new Book();
         book.setIsbn(UUID.randomUUID().toString());
-        book.setTitle("Professional Java JDK 6 Edition");
+        book.setTitle("Professional Java JDK 6 Edition Simpson");
         book.setAuthors("W. Clay Richardson, Donald Avondolio, Scot Schrager, Mark W. Mitchell, Jeff Scanlon");
         book.setPublisher("Wrox");
         book.setBinding("Paperback");

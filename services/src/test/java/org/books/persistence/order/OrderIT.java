@@ -29,7 +29,7 @@ public class OrderIT {
 
     @BeforeTest
     public void setup() {
-        emf = Persistence.createEntityManagerFactory("bookstore");
+        emf = Persistence.createEntityManagerFactory("bookstoretest");
         em = emf.createEntityManager();
         c1 = createCustomer("Ferdi Kübler", "ferdi.kübler@radsport.ch");
         o1 = createOrder(c1);
@@ -121,8 +121,8 @@ public class OrderIT {
         order.setLineItems(createLineItems(createBook()));
         return order;
     }
-    
-     private List<LineItem> createLineItems(Book book) {
+
+    private List<LineItem> createLineItems(Book book) {
         List<LineItem> lineItems = Lists.newArrayList();
         final LineItem lineItem = new LineItem();
         lineItem.setBook(book);
@@ -136,11 +136,11 @@ public class OrderIT {
         customer.setEmail(email);
         customer.setName(name);
         customer.setAddress(new Address());
-        customer.setCreditCard(new CreditCard());
+        customer.setCreditCard(createCreditcard());
         return customer;
     }
-    
-        private CreditCard createCreditcard() {
+
+    private CreditCard createCreditcard() {
         CreditCard creditcard = new CreditCard();
         creditcard.setType(CreditCard.Type.MasterCard);
         creditcard.setNumber("5411222233334445");
@@ -175,11 +175,12 @@ public class OrderIT {
         Book book = new Book();
         book.setAuthors("Adam Bien");
         book.setBinding("lose");
-        book.setIsbn("15646651313212");
+        book.setIsbn(UUID.randomUUID().toString());
         book.setNumberOfPages(5);
         book.setPublisher("o'Reily");
         book.setPublicationDate(new Date(System.currentTimeMillis()));
         book.setTitle("Java in a Nutshel");
+        book.setPrice(new BigDecimal(12.50));
         return book;
     }
 

@@ -43,7 +43,7 @@ public class OrderServiceBean implements OrderService {
     public String placeOrder(Customer customer, List<LineItem> items) throws CreditCardExpiredException {
         final CreditCard creditCard = customer.getCreditCard();
         validateCreditcard(creditCard);
-        
+
         Order order = new Order();
         order.setOrderNumber(UUID.randomUUID().toString());
         order.setOrderDate(new Date(System.currentTimeMillis()));
@@ -54,7 +54,7 @@ public class OrderServiceBean implements OrderService {
         order.setAmount(summarizeTotalOrderAmount(items));
         em.persist(order);
         em.flush();
-        
+
         sendMessageToOrderProcessor(order.getId());
         return order.getOrderNumber();
 

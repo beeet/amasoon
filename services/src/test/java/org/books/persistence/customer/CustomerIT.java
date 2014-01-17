@@ -19,7 +19,7 @@ public class CustomerIT {
 
     @BeforeTest
     public void setup() {
-        emf = Persistence.createEntityManagerFactory("bookstore");
+        emf = Persistence.createEntityManagerFactory("bookstoretest");
         em = emf.createEntityManager();
         em.getTransaction().begin();
         customer = new Customer();

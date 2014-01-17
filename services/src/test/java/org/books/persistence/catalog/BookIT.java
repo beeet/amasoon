@@ -26,7 +26,7 @@ public class BookIT {
     @BeforeTest
     public void setUp() {
         try {
-            emf = Persistence.createEntityManagerFactory("bookstore");
+            emf = Persistence.createEntityManagerFactory("bookstoretest");
             em = emf.createEntityManager();
             em.getTransaction().begin();
             insertBooks();
@@ -115,7 +115,7 @@ public class BookIT {
         List<String> keywords = Arrays.asList("Java", "in");
         Query q = em.createQuery(BookQueryFactory.findByKeywords(em, keywords));
         List<Book> books = q.getResultList();
-        assertEquals(books.size(), 2);
+        assertEquals(books.size(), 1);
 
         // find author
         keywords = Arrays.asList("Donald", "Mark", "Jeff");
@@ -124,13 +124,19 @@ public class BookIT {
         assertEquals(books.size(), 1);
 
         // find publisher
-        keywords = Arrays.asList("Apress", "pTr");
+        keywords = Arrays.asList("pTr");
         q = em.createQuery(BookQueryFactory.findByKeywords(em, keywords));
         books = q.getResultList();
         assertEquals(books.size(), 1);
 
         // find misc
         keywords = Arrays.asList("4th Edition", "jeff");
+        q = em.createQuery(BookQueryFactory.findByKeywords(em, keywords));
+        books = q.getResultList();
+        assertEquals(books.size(), 0);
+
+        // find misc
+        keywords = Arrays.asList("Java");
         q = em.createQuery(BookQueryFactory.findByKeywords(em, keywords));
         books = q.getResultList();
         assertEquals(books.size(), 2);
