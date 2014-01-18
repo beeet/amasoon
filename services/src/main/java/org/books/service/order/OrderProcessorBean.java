@@ -27,9 +27,10 @@ public class OrderProcessorBean implements MessageListener {
     private MailService mailService;
     @PersistenceContext
     private EntityManager em;
-
     @Resource
     private TimerService timerService;
+    @Resource(name = "orderProcessingTime")
+    private Long orderProcessingTime;
 
     @Override
     public void onMessage(Message message) {
@@ -37,7 +38,7 @@ public class OrderProcessorBean implements MessageListener {
             MapMessage mapMessage = (MapMessage) message;
             Integer orderId = mapMessage.getInt("orderId");
             Order order = em.find(Order.class, orderId);
-            timerService.createSingleActionTimer(20000, new TimerConfig(order, true));
+            timerService.createSingleActionTimer(orderProcessingTime, new TimerConfig(order, true));
         } catch (JMSException ex) {
             Logger.getLogger(OrderProcessorBean.class.getName()).log(Level.SEVERE, null, ex);
         }
