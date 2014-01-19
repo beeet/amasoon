@@ -29,7 +29,7 @@ public class MailServiceBeanIT {
         customer.setName("Beat Schumacher");
         order.setCustomer(customer);
         //act
-        mailService.sendMail(order);
+        mailService.sendMail(order, MessageBuilder.MailType.OrderPlaced);
     }
 
 }

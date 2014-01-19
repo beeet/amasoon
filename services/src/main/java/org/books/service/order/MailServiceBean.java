@@ -19,9 +19,9 @@ public class MailServiceBean implements MailService {
     private Session mailSession;
 
     @Override
-    public void sendMail(Order order) {
+    public void sendMail(Order order, MessageBuilder.MailType type) {
         try {
-            Transport.send(new MessageBuilder(mailSession, order).buid());
+            Transport.send(new MessageBuilder(mailSession, order, type).build());
             Logger.getLogger(MailServiceBean.class.getName()).log(Level.INFO, "Mail sent", order);
         } catch (MessagingException ex) {
             Logger.getLogger(MailServiceBean.class.getName()).log(Level.SEVERE, "Encountered an error", ex);

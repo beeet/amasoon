@@ -9,6 +9,7 @@ import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.annotation.Resource;
+import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.jms.Connection;
 import javax.jms.ConnectionFactory;
@@ -32,6 +33,8 @@ import org.books.persistence.order.Order.Status;
 @Stateless(name = "OrderService")
 public class OrderServiceBean implements OrderService {
 
+    @EJB
+    private MailService mailService;
     @Resource(lookup = "jms/orderQueueFactory")
     private ConnectionFactory connectionFactory;
     @Resource(lookup = "jms/orderQueue")
@@ -56,6 +59,7 @@ public class OrderServiceBean implements OrderService {
         em.flush();
 
         sendMessageToOrderProcessor(order.getId());
+        mailService.sendMail(order, MessageBuilder.MailType.OrderPlaced);
         return order.getOrderNumber();
 
     }

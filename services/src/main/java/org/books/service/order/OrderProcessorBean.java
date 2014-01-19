@@ -51,7 +51,7 @@ public class OrderProcessorBean implements MessageListener {
         if (order.isOpen()) {
             order.setStatus(Order.Status.closed);
         }
-        mailService.sendMail(order);
+        mailService.sendMail(order, MessageBuilder.MailType.OrderProcessed);
     }
 
 }
