@@ -19,12 +19,20 @@
         <interceptor>
             <interceptor-class>org.books.utils.LoggingInterceptor</interceptor-class>
         </interceptor>
+        <interceptor>
+            <interceptor-class>org.books.utils.ConstraintViolationInterceptor</interceptor-class>
+        </interceptor>
     </interceptors>
     <assembly-descriptor>
         <interceptor-binding>
             <description>default logger for all beans</description>
             <ejb-name>*</ejb-name>
             <interceptor-class>org.books.utils.LoggingInterceptor</interceptor-class>
+        </interceptor-binding>
+        <interceptor-binding>
+            <description>default logger for all beans</description>
+            <ejb-name>*</ejb-name>
+            <interceptor-class>org.books.utils.ConstraintViolationInterceptor</interceptor-class>
         </interceptor-binding>
     </assembly-descriptor>
 
