@@ -34,7 +34,7 @@ public class CatalogServiceBean implements CatalogService {
         try {
             return query.getSingleResult();
         } catch (NoResultException e) {
-            throw new BookNotFoundException();
+            throw new BookNotFoundException(e);
         }
     }
 

@@ -56,11 +56,7 @@ public class OrderServiceBeanIT {
         cust.setCreditCard(creditCard);
         List<LineItem> lineItems = createLineItems(book);
         //act
-        try {
-            orderService.placeOrder(cust, lineItems);
-        } catch (EJBException ejbException) {
-            throw ejbException.getCause();
-        }
+        orderService.placeOrder(cust, lineItems);
     }
 
     @Test(dependsOnMethods = "placeOrder")

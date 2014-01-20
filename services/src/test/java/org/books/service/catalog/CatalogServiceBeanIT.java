@@ -47,20 +47,12 @@ public class CatalogServiceBeanIT {
 
     @Test(expectedExceptions = BookAlreadyExistsException.class, dependsOnMethods = "findBook")
     public void addBook_AddTwice_BookAlreadyExistsExceptionExpected() throws Throwable {
-        try {
-            catalogService.addBook(book1);
-        } catch (EJBException ejbException) {
-            throw ejbException.getCause();
-        }
+        catalogService.addBook(book1);
     }
 
     @Test(expectedExceptions = BookNotFoundException.class)
     public void findBook_BookDoesNotExist_BookNotFoundExceptionExpected() throws Throwable {
-        try {
-            catalogService.findBook("gugus");
-        } catch (EJBException ejbException) {
-            throw ejbException.getCause();
-        }
+        catalogService.findBook("gugus");
     }
 
     @Test(dependsOnMethods = "addBook")

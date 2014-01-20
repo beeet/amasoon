@@ -30,7 +30,7 @@ public class CustomerServiceBean implements CustomerService {
         try {
             return query.getSingleResult();
         } catch (NoResultException e) {
-            throw new CustomerNotFoundException();
+            throw new CustomerNotFoundException(e);
         }
     }
 

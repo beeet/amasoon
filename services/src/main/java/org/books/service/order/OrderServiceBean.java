@@ -79,7 +79,7 @@ public class OrderServiceBean implements OrderService {
         try {
             return query.getSingleResult();
         } catch (NoResultException e) {
-            throw new OrderNotFoundException();
+            throw new OrderNotFoundException(e);
         }
     }
 
