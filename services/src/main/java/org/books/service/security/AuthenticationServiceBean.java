@@ -11,7 +11,7 @@ import javax.persistence.TypedQuery;
 import org.books.persistence.security.User;
 import org.books.utils.Cryptor;
 
-@Stateless
+@Stateless(name = "AuthenticationService")
 public class AuthenticationServiceBean implements AuthenticationService {
 
     @PersistenceContext
@@ -27,7 +27,7 @@ public class AuthenticationServiceBean implements AuthenticationService {
         }
     }
 
-    public User findUser(String name) throws UserNotFoundException {
+    private User findUser(String name) throws UserNotFoundException {
         TypedQuery<User> query = em.createNamedQuery(User.FIND_BY_NAME, User.class);
         query.setParameter("name", name);
         try {

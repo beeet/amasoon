@@ -2,7 +2,6 @@ package org.books.service.customer;
 
 import java.sql.Date;
 import java.util.Random;
-import javax.ejb.EJBException;
 import javax.naming.InitialContext;
 import org.books.persistence.customer.Address;
 import org.books.persistence.customer.CreditCard;
