@@ -2,7 +2,6 @@ package org.books.persistence.security;
 
 import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
-import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -11,6 +10,7 @@ import javax.persistence.Id;
 import javax.persistence.NamedQuery;
 import javax.persistence.PrePersist;
 import javax.persistence.Table;
+import org.books.utils.Cryptor;
 
 @Entity
 @Table(name = "USERS")
@@ -52,17 +52,10 @@ public class User implements Serializable {
     @PrePersist
     public void hashPassword() {
         try {
-            this.password = hashPassword(this.password);
+            this.password = Cryptor.hash(this.password);
         } catch (NoSuchAlgorithmException | UnsupportedEncodingException ex) {
             Logger.getLogger(User.class.getName()).log(Level.SEVERE, "hashPassword", ex);
         }
-    }
-
-    public String hashPassword(String password) throws NoSuchAlgorithmException, UnsupportedEncodingException {
-        if (password == null) {
-            return null;
-        }
-        return new String(MessageDigest.getInstance("SHA-256").digest(password.getBytes("UTF-8")));
     }
 
     @Override

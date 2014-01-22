@@ -2,8 +2,6 @@ package org.books.service.security;
 
 import java.io.UnsupportedEncodingException;
 import java.security.NoSuchAlgorithmException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.ejb.EJBException;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -11,6 +9,7 @@ import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 import org.books.persistence.security.User;
+import org.books.utils.Cryptor;
 
 @Stateless
 public class AuthenticationServiceBean implements AuthenticationService {
@@ -42,7 +41,7 @@ public class AuthenticationServiceBean implements AuthenticationService {
     public void authenticate(String username, String password) throws UserNotFoundException, InvalidPasswordException {
         User user = findUser(username);
         try {
-            if (!user.getPassword().equals(user.hashPassword(password))) {
+            if (!user.getPassword().equals(Cryptor.hash(password))) {
                 throw new InvalidPasswordException();
             }
         } catch (NoSuchAlgorithmException | UnsupportedEncodingException ex) {
@@ -54,10 +53,10 @@ public class AuthenticationServiceBean implements AuthenticationService {
     public void changePassword(String username, String oldPassword, String newPassword) throws UserNotFoundException, InvalidPasswordException {
         User user = findUser(username);
         try {
-            if (!user.getPassword().equals(user.hashPassword(oldPassword))) {
+            if (!user.getPassword().equals(Cryptor.hash(oldPassword))) {
                 throw new InvalidPasswordException();
             } else {
-                user.setPassword(newPassword);
+                user.setPassword(Cryptor.hash(newPassword));
                 em.persist(user);
             }
         } catch (NoSuchAlgorithmException | UnsupportedEncodingException ex) {

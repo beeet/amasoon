@@ -7,6 +7,7 @@ import java.sql.Date;
 import java.util.List;
 import java.util.Random;
 import java.util.UUID;
+import javax.ejb.EJBAccessException;
 import javax.ejb.EJBException;
 import javax.naming.InitialContext;
 import org.books.persistence.catalog.Book;
@@ -19,6 +20,7 @@ import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertNotNull;
 import static org.testng.Assert.assertTrue;
 import org.testng.annotations.BeforeClass;
+import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
 
 public class OrderServiceBeanIT {
@@ -88,12 +90,32 @@ public class OrderServiceBeanIT {
         assertEquals(result.size(), 1);
     }
 
-    @Test
+    @Test(dependsOnMethods = "placeOrder")
     public void getOrders_NoOrdersFound() {
         //act
         List<Order> result = orderService.getOrders(new Customer());
         //assert
         assertTrue(result.isEmpty());
+    }
+
+    @Test(dependsOnMethods = "getOrders_NoOrdersFound")
+    public void getOrders_AccessGrantedForEmployee() throws Exception {
+        //act
+        new ProgrammaticLogin().login("mary", "mary".toCharArray());
+        Order order = orderService.findOrder(orderNumber);
+        List<Order> result = orderService.getOrders(order.getCustomer());
+        //assert
+        assertEquals(result.size(), 1);
+    }
+
+    @Test(dependsOnMethods = "getOrders_AccessGrantedForEmployee", expectedExceptions = EJBAccessException.class)
+    public void getOrders_AccessDenied_NotLoggedIn() throws Exception {
+        //act
+        new ProgrammaticLogin().logout();
+        Order order = orderService.findOrder(orderNumber);
+        List<Order> result = orderService.getOrders(order.getCustomer());
+        //assert
+        assertEquals(result.size(), 1);
     }
 
     @Test
@@ -110,9 +132,40 @@ public class OrderServiceBeanIT {
         orderService.cancelOrder(order);
     }
 
+    @Test(expectedExceptions = EJBAccessException.class)
+    public void cancelOrder_AccessDenied() throws Exception {
+        //arrange
+        new ProgrammaticLogin().login("mary", "mary".toCharArray());
+        Address address = createAddress();
+        CreditCard creditCard = createCreditcard();
+        Customer cust = createCustomer("Rudi Rüssel", "rudi.ruessel@radsport.ch");
+        cust.setAddress(address);
+        cust.setCreditCard(creditCard);
+        List<LineItem> lineItems = createLineItems(createBook());
+        Order order = createOrder(cust, address, creditCard, lineItems);
+        //act
+        orderService.cancelOrder(order);
+    }
+
+    @Test(dependsOnMethods = {"findOrder", "getOrders"}, expectedExceptions = EJBAccessException.class)
+    public void cancelOrder_AccessDenied_NotLoggedIn() throws Exception {
+        //arrange
+        new ProgrammaticLogin().logout();
+        Address address = createAddress();
+        CreditCard creditCard = createCreditcard();
+        Customer cust = createCustomer("Rudi Rüssel", "rudi.ruessel@radsport.ch");
+        cust.setAddress(address);
+        cust.setCreditCard(creditCard);
+        List<LineItem> lineItems = createLineItems(createBook());
+        Order order = createOrder(cust, address, creditCard, lineItems);
+        //act
+        orderService.cancelOrder(order);
+    }
+
     @Test(expectedExceptions = OrderNotCancelableException.class)
     public void cancelOrder_OrderIsNotYetPersisted() throws Throwable {
         //arrange
+        new ProgrammaticLogin().login("john", "john".toCharArray());
         Order order = new Order();
         order.setStatus(Order.Status.closed);
         //act
