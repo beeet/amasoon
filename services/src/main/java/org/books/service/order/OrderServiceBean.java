@@ -9,6 +9,7 @@ import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.annotation.Resource;
+import javax.annotation.security.RolesAllowed;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.jms.Connection;
@@ -84,6 +85,7 @@ public class OrderServiceBean implements OrderService {
     }
 
     @Override
+    @RolesAllowed("employee")
     public List<Order> getOrders(Customer customer) {
         TypedQuery<Order> query = em.createNamedQuery(Order.FIND_BY_CUSTOMER, Order.class);
         query.setParameter("customer", customer);
@@ -91,6 +93,7 @@ public class OrderServiceBean implements OrderService {
     }
 
     @Override
+    @RolesAllowed("manager")
     public void cancelOrder(Order order) throws OrderNotCancelableException {
         if (!order.isOpen()) {
             throw new OrderNotCancelableException();

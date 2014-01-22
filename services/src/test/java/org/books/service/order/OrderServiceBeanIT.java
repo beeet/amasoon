@@ -1,6 +1,7 @@
 package org.books.service.order;
 
 import com.google.common.collect.Lists;
+import com.sun.enterprise.security.ee.auth.login.ProgrammaticLogin;
 import java.math.BigDecimal;
 import java.sql.Date;
 import java.util.List;
@@ -29,6 +30,8 @@ public class OrderServiceBeanIT {
 
     @BeforeClass
     public void init() throws Exception {
+        System.setProperty("java.security.auth.login.config", "src/test/resources/appclientlogin.conf");
+        new ProgrammaticLogin().login("john", "john".toCharArray());
         orderService = (OrderService) new InitialContext().lookup(JNDI_NAME);
     }
 
