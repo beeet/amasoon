@@ -14,14 +14,14 @@ public class SignatureGenerator {
 
     private static final CredentialsLoader loader = new CredentialsLoader();
 
-    
-    public static Credentials generate(String operation){
+    public static Credentials on(String operation) {
         Credentials credentials = new Credentials();
         credentials.setTimestamp(getTimestamp());
-        credentials.setSignature(getSignature(operation,credentials.getTimestamp()));
-        credentials.setAccessKeyId(getAccessKeyId());
+        credentials.setSignature(getSignature(operation, credentials.getTimestamp()));
+        credentials.setAccessKeyId(loader.getAccessKeyId());
         return credentials;
     }
+
     private static String getSignature(String operation, String timestamp) {
         try {
             Mac mac = Mac.getInstance(loader.getMacAlgorithm());
@@ -37,10 +37,6 @@ public class SignatureGenerator {
     private static String getTimestamp() {
         DateFormat dateFormat = new SimpleDateFormat(loader.getTimestampFormat());
         return dateFormat.format(Calendar.getInstance().getTime());
-    }
-
-    public static String getAccessKeyId() {
-        return loader.getAccessKeyId();
     }
 
     private static String encodeBase64(byte[] data) {
