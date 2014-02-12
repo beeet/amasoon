@@ -1,8 +1,10 @@
 package org.books.utils;
 
+import java.util.List;
 import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.books.persistence.catalog.Book;
 import org.books.service.catalog.AmazonCatalogClient;
 import org.books.service.catalog.AmazonException;
 
@@ -17,7 +19,11 @@ public class StandaloneWsClient {
         System.out.print("MaxResults:  ");
         String maxResults = scanner.nextLine();
         try {
-            AmazonCatalogClient.getInstance().searchBooks(keywords.split(" "), Integer.valueOf(maxResults));
+            List<Book> books = AmazonCatalogClient.getInstance().searchBooks(keywords.split(" "), Integer.valueOf(maxResults));
+            int count = 0;
+            for (Book book : books) {
+                System.out.println(++count + ": " + book.getTitle() + " --- " + book.getAuthors());
+            }
         } catch (AmazonException ex) {
             logger.log(Level.SEVERE, null, ex);
         }
