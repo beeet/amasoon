@@ -22,7 +22,7 @@ public class StandaloneWsClient {
             List<Book> books = AmazonCatalogClient.getInstance().searchBooks(keywords.split(" "), Integer.valueOf(maxResults));
             int count = 0;
             for (Book book : books) {
-                System.out.println(++count + ": " + book.getTitle() + " --- " + book.getAuthors());
+                System.out.println(++count + " : " + book);
             }
         } catch (AmazonException ex) {
             logger.log(Level.SEVERE, null, ex);

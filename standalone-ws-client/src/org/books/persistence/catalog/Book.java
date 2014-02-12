@@ -78,4 +78,25 @@ public class Book {
         this.price = price;
     }
 
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append(this.isbn);
+        sb.append(" | ");
+        sb.append(this.title);
+        sb.append(" | ");
+        sb.append(this.authors);
+        sb.append(" | ");
+        sb.append(this.binding);
+        sb.append(" | ");
+        sb.append(this.numberOfPages);
+        sb.append(" | ");
+        sb.append(this.publisher);
+        sb.append(" | ");
+        sb.append(this.publicationDate);
+        sb.append(" | ");
+        sb.append(this.price);
+        return sb.toString();
+    }
+
 }

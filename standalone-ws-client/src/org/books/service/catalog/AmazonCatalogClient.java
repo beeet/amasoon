@@ -8,16 +8,18 @@ import com.amazon.webservices.ItemSearch;
 import com.amazon.webservices.ItemSearchRequest;
 import com.amazon.webservices.ItemSearchResponse;
 import com.amazon.webservices.Items;
+import java.math.BigDecimal;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.books.persistence.catalog.Book;
 import org.books.utils.CredentialProperties;
 
 public class AmazonCatalogClient implements AmazonCatalog {
-
-    private static Logger logger = Logger.getLogger(AmazonCatalogClient.class.getName());
 
     private static AmazonCatalogClient instance;
     private AWSECommerceServicePortType amazonServicePortType;
@@ -36,25 +38,46 @@ public class AmazonCatalogClient implements AmazonCatalog {
 
     @Override
     public List<Book> searchBooks(String[] keywords, int maxResults) throws AmazonException {
-        logger.info("AmazonCatalogService called - Keywords: " + Arrays.toString(keywords) + " - maxResults: " + maxResults);
         ItemSearchResponse response = amazonServicePortType.itemSearch(getItemSearch(keywords));
         List<Book> books = new ArrayList<>();
         for (Items items : response.getItems()) {
             for (Item item : items.getItem()) {
-                Book book = new Book();
                 ItemAttributes itemAttributes = item.getItemAttributes();
-                book.setIsbn(itemAttributes.getISBN());
-                book.setAuthors(listToString(itemAttributes.getAuthor()));
-                book.setBinding(itemAttributes.getBinding());
-                book.setNumberOfPages(itemAttributes.getNumberOfPages().intValue());
-//                book.setPrice(itemAttributes.getListPrice());
-//                book.setPublicationDate(itemAttributes.getPublicationDate());
-                book.setPublisher(itemAttributes.getPublisher());
-                book.setTitle(itemAttributes.getTitle());
-                books.add(book);
+                if (containsRequiredAttributes(itemAttributes)) {
+                    try {
+                        books.add(createBook(itemAttributes));
+                    } catch (ParseException ex) {
+                        Logger.getLogger(AmazonCatalogClient.class.getName()).log(Level.INFO, null, ex);
+                    }
+                }
             }
         }
         return books;
+    }
+
+    private boolean containsRequiredAttributes(ItemAttributes itemAttributes) {
+        // todo: use google guice
+        return itemAttributes.getISBN() != null && !itemAttributes.getISBN().equals("")
+                && itemAttributes.getAuthor() != null && !itemAttributes.getAuthor().isEmpty()
+                && itemAttributes.getBinding() != null && !itemAttributes.getBinding().equals("")
+                && itemAttributes.getNumberOfPages() != null
+                && itemAttributes.getListPrice() != null && itemAttributes.getListPrice().getAmount() != null
+                && itemAttributes.getPublicationDate() != null && !itemAttributes.getPublicationDate().equals("")
+                && itemAttributes.getPublisher() != null && !itemAttributes.getPublisher().equals("")
+                && itemAttributes.getTitle() != null && !itemAttributes.getTitle().equals("");
+    }
+
+    private Book createBook(ItemAttributes itemAttributes) throws ParseException {
+        Book book = new Book();
+        book.setIsbn(itemAttributes.getISBN());
+        book.setAuthors(convertListToString(itemAttributes.getAuthor()));
+        book.setBinding(itemAttributes.getBinding());
+        book.setNumberOfPages(itemAttributes.getNumberOfPages().intValue());
+        book.setPrice(new BigDecimal(itemAttributes.getListPrice().getAmount()).setScale(2).divide(new BigDecimal(100)));
+        book.setPublicationDate(convertStringToDate(itemAttributes.getPublicationDate()));
+        book.setPublisher(itemAttributes.getPublisher());
+        book.setTitle(itemAttributes.getTitle());
+        return book;
     }
 
     private ItemSearch getItemSearch(String[] keywords) {
@@ -82,7 +105,7 @@ public class AmazonCatalogClient implements AmazonCatalog {
         return sb.toString();
     }
 
-    private String listToString(List<String> strings) {
+    private String convertListToString(List<String> strings) {
         StringBuilder sb = new StringBuilder();
         boolean first = true;
         for (String s : strings) {
@@ -94,6 +117,17 @@ public class AmazonCatalogClient implements AmazonCatalog {
             }
         }
         return sb.toString();
+    }
+
+    private java.sql.Date convertStringToDate(String dateString) throws ParseException {
+        switch (dateString.length()) {
+            case 4:
+                dateString = dateString + "-01-01"; //2012 => 2012-01-01
+            case 7:
+                dateString = dateString + "-01"; //2012-12 => 2012-12-01
+        }
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        return new java.sql.Date(dateFormat.parse(dateString).getTime());
     }
 
 }
