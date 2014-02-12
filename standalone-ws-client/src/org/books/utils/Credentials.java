@@ -1,31 +1,32 @@
 package org.books.utils;
 
 public class Credentials {
+
     private String signature;
-    private String associateTag;
+    private String accessKeyId;
     private String timestamp;
 
     public String getSignature() {
         return signature;
     }
 
-    public void setSignature(String signature) {
+    void setSignature(String signature) {
         this.signature = signature;
     }
 
-    public String getAssociateTag() {
-        return associateTag;
+    public String getAccessKeyId() {
+        return accessKeyId;
     }
 
-    public void setAssociateTag(String associateTag) {
-        this.associateTag = associateTag;
+    void setAccessKeyId(String accessKeyId) {
+        this.accessKeyId = accessKeyId;
     }
 
     public String getTimestamp() {
         return timestamp;
     }
 
-    public void setTimestamp(String timestamp) {
+    void setTimestamp(String timestamp) {
         this.timestamp = timestamp;
     }
 }

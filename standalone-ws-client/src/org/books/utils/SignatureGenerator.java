@@ -20,7 +20,7 @@ public class SignatureGenerator {
         Credentials credentials = new Credentials();
         credentials.setTimestamp(getTimestamp());
         credentials.setSignature(getSignature(operation,credentials.getTimestamp()));
-        credentials.setAssociateTag(getAssociateTag());
+        credentials.setAccessKeyId(getAccessKeyId());
         return credentials;
     }
     private static String getSignature(String operation, String timestamp) {
@@ -36,17 +36,15 @@ public class SignatureGenerator {
     }
 
     private static String getTimestamp() {
-     //   credentials.load();
         DateFormat dateFormat = new SimpleDateFormat(loader.getTimestampFormat());
         return dateFormat.format(Calendar.getInstance().getTime());
     }
 
-    public static String getAssociateTag() {
-        return loader.getAssociateTag();
+    public static String getAccessKeyId() {
+        return loader.getAccessKeyId();
     }
 
     private static String encodeBase64(byte[] data) {
-      //  credentials.load();
         String encoded = "";
         int padding = (3 - data.length % 3) % 3;
         byte[] padded = new byte[data.length + padding];
