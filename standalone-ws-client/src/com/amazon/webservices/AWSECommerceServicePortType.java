@@ -2,6 +2,7 @@
 package com.amazon.webservices;
 
 import java.util.concurrent.Future;
+import javax.jws.HandlerChain;
 import javax.jws.WebMethod;
 import javax.jws.WebParam;
 import javax.jws.WebResult;
@@ -19,6 +20,7 @@ import javax.xml.ws.Response;
  * 
  */
 @WebService(name = "AWSECommerceServicePortType", targetNamespace = "http://webservices.amazon.com/AWSECommerceService/2011-08-01")
+@HandlerChain(file = "AWSECommerceServicePortType_handler.xml")
 @SOAPBinding(parameterStyle = SOAPBinding.ParameterStyle.BARE)
 @XmlSeeAlso({
     ObjectFactory.class
