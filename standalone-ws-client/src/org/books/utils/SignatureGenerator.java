@@ -14,24 +14,28 @@ public class SignatureGenerator {
 
     private static final CredentialsLoader credentials = new CredentialsLoader();
 
-    public static String getTimestamp() {
-        credentials.load();
-        DateFormat dateFormat = new SimpleDateFormat(credentials.getTimestampFormat());
-        return dateFormat.format(Calendar.getInstance().getTime());
-    }
-
-    public static String getSignature( String operation) {
+    public static String getSignature(String operation) {
         credentials.load();
         try {
-            String secretKey = "taadPslXjp3a2gmthMgP369feVy32A32eM9SqkVP";
             Mac mac = Mac.getInstance(credentials.getMacAlgorithm());
-            SecretKey key = new SecretKeySpec(secretKey.getBytes(), credentials.getMacAlgorithm());
+            SecretKey key = new SecretKeySpec(credentials.getSecretAccessKey().getBytes(), credentials.getMacAlgorithm());
             mac.init(key);
             byte[] data = mac.doFinal((operation + getTimestamp()).getBytes());
             return encodeBase64(data);
         } catch (InvalidKeyException | NoSuchAlgorithmException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public static String getTimestamp() {
+        credentials.load();
+        DateFormat dateFormat = new SimpleDateFormat(credentials.getTimestampFormat());
+        return dateFormat.format(Calendar.getInstance().getTime());
+    }
+
+    public static String getAssociateTag() {
+        credentials.load();
+        return credentials.getAssociateTag();
     }
 
     private static String encodeBase64(byte[] data) {

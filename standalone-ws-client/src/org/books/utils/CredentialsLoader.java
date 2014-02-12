@@ -6,11 +6,14 @@ import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class CredentialsLoader {
+class CredentialsLoader {
 
     public static final String TIMESTAMP_FORMAT = "TIMESTAMP_FORMAT";
     public static final String MAC_ALGORITHM = "MAC_ALGORITHM";
     public static final String BASE64_CHARS = "BASE64_CHARS";
+    public static final String ACCESS_KEY_ID = "ACCESS_KEY_ID";
+    public static final String SECRET_ACCESS_KEY = "SECRET_ACCESS_KEY";
+    public static final String ASSOCIACTE_TAG = "ASSOCIACTE_TAG";
     private Properties props;
 
     public void load() {
@@ -37,9 +40,16 @@ public class CredentialsLoader {
         return props.getProperty(BASE64_CHARS);
     }
 
-    public static void main(String[] args) {
-        final CredentialsLoader loader = new CredentialsLoader();
-        loader.load();
-        loader.getBase64Chars();
+    public String getAccessKeyId() {
+        return props.getProperty(ACCESS_KEY_ID);
     }
+
+    public String getAssociateTag() {
+        return props.getProperty(ASSOCIACTE_TAG);
+    }
+
+    public String getSecretAccessKey() {
+        return props.getProperty(SECRET_ACCESS_KEY);
+    }
+
 }
