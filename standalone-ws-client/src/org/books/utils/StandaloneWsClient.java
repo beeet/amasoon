@@ -11,6 +11,7 @@ public class StandaloneWsClient {
     private static Logger logger = Logger.getLogger(StandaloneWsClient.class.getName());
 
     public static void main(String[] args) {
+        String signature = SignatureGenerator.getSignature("ItemSearch");
         Scanner scanner = new Scanner(System.in);
         System.out.print("Keywords: ");
         String keywords = scanner.nextLine();
