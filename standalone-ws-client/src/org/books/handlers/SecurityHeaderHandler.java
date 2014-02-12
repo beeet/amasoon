@@ -39,7 +39,7 @@ public class SecurityHeaderHandler implements SOAPHandler<SOAPMessageContext> {
                     header = envelope.addHeader();
                 }
                 header.addNamespaceDeclaration(NAMESPACE, "http://security.amazonaws.com/doc/2007-01-01/");
-                Credentials credentials = SignatureGenerator.generate("ItemSearch");
+                Credentials credentials = SignatureGenerator.on("ItemSearch");
                 SOAPElement awsAccessKeyIdElement = header.addChildElement("AWSAccessKeyId", NAMESPACE);
                 awsAccessKeyIdElement.addTextNode(credentials.getAccessKeyId());
                 SOAPElement timestampElement = header.addChildElement("Timestamp", NAMESPACE);

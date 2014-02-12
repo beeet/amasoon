@@ -13,7 +13,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Logger;
 import org.books.persistence.catalog.Book;
-import org.books.utils.CredentialsLoader;
+import org.books.utils.CredentialProperties;
 
 public class AmazonCatalogClient implements AmazonCatalog {
 
@@ -63,7 +63,7 @@ public class AmazonCatalogClient implements AmazonCatalog {
         itemSearchRequest.getResponseGroup().add("ItemAttributes");
         itemSearchRequest.setKeywords(getKeywordsString(keywords));
         ItemSearch itemSearch = new ItemSearch();
-        itemSearch.setAssociateTag(new CredentialsLoader().getAssociateTag());
+        itemSearch.setAssociateTag(new CredentialProperties().getAssociateTag());
         itemSearch.getRequest().add(itemSearchRequest);
         return itemSearch;
     }

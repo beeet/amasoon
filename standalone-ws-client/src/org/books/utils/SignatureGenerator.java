@@ -12,7 +12,7 @@ import javax.crypto.spec.SecretKeySpec;
 
 public class SignatureGenerator {
 
-    private static final CredentialsLoader loader = new CredentialsLoader();
+    private static final CredentialProperties loader = new CredentialProperties();
 
     public static Credentials on(String operation) {
         Credentials credentials = new Credentials();
