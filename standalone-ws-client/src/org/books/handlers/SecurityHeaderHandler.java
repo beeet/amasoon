@@ -13,6 +13,8 @@ import javax.xml.soap.SOAPMessage;
 import javax.xml.ws.handler.MessageContext;
 import javax.xml.ws.handler.soap.SOAPHandler;
 import javax.xml.ws.handler.soap.SOAPMessageContext;
+import org.books.utils.Credentials;
+import org.books.utils.SignatureGenerator;
 
 public class SecurityHeaderHandler implements SOAPHandler<SOAPMessageContext> {
 
@@ -37,12 +39,13 @@ public class SecurityHeaderHandler implements SOAPHandler<SOAPMessageContext> {
                     header = envelope.addHeader();
                 }
                 header.addNamespaceDeclaration(NAMESPACE, "http://security.amazonaws.com/doc/2007-01-01/");
+                Credentials credentials = SignatureGenerator.generate("ItemSearch");
                 SOAPElement awsAccessKeyIdElement = header.addChildElement("AWSAccessKeyId", NAMESPACE);
-                // awsAccessKeyIdElement.addTextNode("")
+                awsAccessKeyIdElement.addTextNode(credentials.getAccessKeyId());
                 SOAPElement timestampElement = header.addChildElement("Timestamp", NAMESPACE);
-//                timestampElement.addTextNode(null)
+                timestampElement.addTextNode(credentials.getTimestamp());
                 SOAPElement signatureElement = header.addChildElement("Signature", NAMESPACE);
-//               signatureElement.addTextNode("");
+                signatureElement.addTextNode(credentials.getSignature());
 
             } catch (SOAPException ex) {
                 Logger.getLogger(SecurityHeaderHandler.class.getName()).log(Level.SEVERE, null, ex);
