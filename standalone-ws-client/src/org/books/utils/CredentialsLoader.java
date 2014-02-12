@@ -6,7 +6,7 @@ import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-class CredentialsLoader {
+public class CredentialsLoader {
 
     public static final String TIMESTAMP_FORMAT = "TIMESTAMP_FORMAT";
     public static final String MAC_ALGORITHM = "MAC_ALGORITHM";
@@ -16,7 +16,11 @@ class CredentialsLoader {
     public static final String ASSOCIACTE_TAG = "ASSOCIACTE_TAG";
     private Properties props;
 
-    public void load() {
+    public CredentialsLoader() {
+        load();
+    }
+
+    private void load() {
         if (null != props) {
             return;
         }

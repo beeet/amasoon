@@ -16,7 +16,6 @@ public class SignatureGenerator {
 
     
     public static Credentials generate(String operation){
-        loader.load();
         Credentials credentials = new Credentials();
         credentials.setTimestamp(getTimestamp());
         credentials.setSignature(getSignature(operation,credentials.getTimestamp()));
