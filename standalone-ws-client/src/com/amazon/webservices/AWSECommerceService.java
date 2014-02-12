@@ -3,6 +3,7 @@ package com.amazon.webservices;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import javax.jws.HandlerChain;
 import javax.xml.namespace.QName;
 import javax.xml.ws.Service;
 import javax.xml.ws.WebEndpoint;
@@ -18,6 +19,7 @@ import javax.xml.ws.WebServiceFeature;
  * 
  */
 @WebServiceClient(name = "AWSECommerceService", targetNamespace = "http://webservices.amazon.com/AWSECommerceService/2011-08-01", wsdlLocation = "http://webservices.amazon.com/AWSECommerceService/AWSECommerceService.wsdl")
+@HandlerChain(file = "AWSECommerceService_handler.xml")
 public class AWSECommerceService
     extends Service
 {
