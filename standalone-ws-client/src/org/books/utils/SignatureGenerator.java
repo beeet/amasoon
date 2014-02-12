@@ -12,34 +12,41 @@ import javax.crypto.spec.SecretKeySpec;
 
 public class SignatureGenerator {
 
-    private static final CredentialsLoader credentials = new CredentialsLoader();
+    private static final CredentialsLoader loader = new CredentialsLoader();
 
-    public static String getSignature(String operation) {
-        credentials.load();
+    
+    public static Credentials generate(String operation){
+        loader.load();
+        Credentials credentials = new Credentials();
+        credentials.setTimestamp(getTimestamp());
+        credentials.setSignature(getSignature(operation,credentials.getTimestamp()));
+        credentials.setAssociateTag(getAssociateTag());
+        return credentials;
+    }
+    private static String getSignature(String operation, String timestamp) {
         try {
-            Mac mac = Mac.getInstance(credentials.getMacAlgorithm());
-            SecretKey key = new SecretKeySpec(credentials.getSecretAccessKey().getBytes(), credentials.getMacAlgorithm());
+            Mac mac = Mac.getInstance(loader.getMacAlgorithm());
+            SecretKey key = new SecretKeySpec(loader.getSecretAccessKey().getBytes(), loader.getMacAlgorithm());
             mac.init(key);
-            byte[] data = mac.doFinal((operation + getTimestamp()).getBytes());
+            byte[] data = mac.doFinal((operation + timestamp).getBytes());
             return encodeBase64(data);
         } catch (InvalidKeyException | NoSuchAlgorithmException e) {
             throw new RuntimeException(e);
         }
     }
 
-    public static String getTimestamp() {
-        credentials.load();
-        DateFormat dateFormat = new SimpleDateFormat(credentials.getTimestampFormat());
+    private static String getTimestamp() {
+     //   credentials.load();
+        DateFormat dateFormat = new SimpleDateFormat(loader.getTimestampFormat());
         return dateFormat.format(Calendar.getInstance().getTime());
     }
 
     public static String getAssociateTag() {
-        credentials.load();
-        return credentials.getAssociateTag();
+        return loader.getAssociateTag();
     }
 
     private static String encodeBase64(byte[] data) {
-        credentials.load();
+      //  credentials.load();
         String encoded = "";
         int padding = (3 - data.length % 3) % 3;
         byte[] padded = new byte[data.length + padding];
@@ -50,7 +57,7 @@ public class SignatureGenerator {
             int n = new BigInteger(1, buffer).intValue();
             for (int j = 3; j >= 0; j--) {
                 int k = (n >> (6 * j)) & 0x3f;
-                encoded += credentials.getBase64Chars().charAt(k);
+                encoded += loader.getBase64Chars().charAt(k);
             }
         }
         return encoded.substring(0, encoded.length() - padding) + "==".substring(0, padding);
