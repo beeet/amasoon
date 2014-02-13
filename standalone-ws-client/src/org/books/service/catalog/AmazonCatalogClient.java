@@ -2,13 +2,16 @@ package org.books.service.catalog;
 
 import com.amazon.webservices.AWSECommerceService;
 import com.amazon.webservices.AWSECommerceServicePortType;
+import com.amazon.webservices.Errors;
 import com.amazon.webservices.Item;
 import com.amazon.webservices.ItemAttributes;
 import com.amazon.webservices.ItemSearch;
 import com.amazon.webservices.ItemSearchRequest;
 import com.amazon.webservices.ItemSearchResponse;
 import com.amazon.webservices.Items;
+import com.amazon.webservices.Request;
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -22,7 +25,10 @@ import org.books.utils.CredentialProperties;
 public class AmazonCatalogClient implements AmazonCatalog {
 
     private static AmazonCatalogClient instance;
-    private AWSECommerceServicePortType amazonServicePortType;
+    private final AWSECommerceServicePortType amazonServicePortType;
+    private static final int MAX_ITEM_PAGE = 10;
+    private static final String RESPONSE_GROUP = "ItemAttributes";
+    private static final String SEARCH_INDEX = "Books";
 
     public static AmazonCatalogClient getInstance() {
         if (instance == null) {
@@ -38,21 +44,32 @@ public class AmazonCatalogClient implements AmazonCatalog {
 
     @Override
     public List<Book> searchBooks(String[] keywords, int maxResults) throws AmazonException {
-        ItemSearchResponse response = amazonServicePortType.itemSearch(getItemSearch(keywords));
         List<Book> books = new ArrayList<>();
-        for (Items items : response.getItems()) {
-            for (Item item : items.getItem()) {
-                ItemAttributes itemAttributes = item.getItemAttributes();
-                if (containsRequiredAttributes(itemAttributes)) {
-                    try {
-                        books.add(createBook(itemAttributes));
-                    } catch (ParseException ex) {
-                        Logger.getLogger(AmazonCatalogClient.class.getName()).log(Level.INFO, null, ex);
+        itempageloop:
+        for (int i = 1; i <= MAX_ITEM_PAGE; i++) {
+            ItemSearchResponse response = amazonServicePortType.itemSearch(getItemSearch(keywords, i));
+            checkAmazonResponseForErrors(response);
+            for (Items items : response.getItems()) {
+                for (Item item : items.getItem()) {
+                    if (books.size() < maxResults) {
+                        addBookIfItIsValid(item.getItemAttributes(), books);
+                    } else {
+                        break itempageloop;
                     }
                 }
             }
         }
         return books;
+    }
+
+    private void addBookIfItIsValid(ItemAttributes itemAttributes, List<Book> books) {
+        if (containsRequiredAttributes(itemAttributes)) {
+            try {
+                books.add(createBook(itemAttributes));
+            } catch (ParseException ex) {
+                Logger.getLogger(AmazonCatalogClient.class.getName()).log(Level.INFO, "Invalid book received: " + itemAttributes.getTitle(), ex);
+            }
+        }
     }
 
     private boolean containsRequiredAttributes(ItemAttributes itemAttributes) {
@@ -80,11 +97,12 @@ public class AmazonCatalogClient implements AmazonCatalog {
         return book;
     }
 
-    private ItemSearch getItemSearch(String[] keywords) {
+    private ItemSearch getItemSearch(String[] keywords, int itemPage) {
         ItemSearchRequest itemSearchRequest = new ItemSearchRequest();
-        itemSearchRequest.setSearchIndex("Books");
-        itemSearchRequest.getResponseGroup().add("ItemAttributes");
+        itemSearchRequest.setSearchIndex(SEARCH_INDEX);
+        itemSearchRequest.getResponseGroup().add(RESPONSE_GROUP);
         itemSearchRequest.setKeywords(getKeywordsString(keywords));
+        itemSearchRequest.setItemPage(BigInteger.valueOf(itemPage));
         ItemSearch itemSearch = new ItemSearch();
         itemSearch.setAssociateTag(new CredentialProperties().getAssociateTag());
         itemSearch.getRequest().add(itemSearchRequest);
@@ -128,6 +146,21 @@ public class AmazonCatalogClient implements AmazonCatalog {
         }
         DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         return new java.sql.Date(dateFormat.parse(dateString).getTime());
+    }
+
+    private void checkAmazonResponseForErrors(ItemSearchResponse response) throws AmazonException {
+        ArrayList<String> errorList = new ArrayList<>();
+        for (Items items : response.getItems()) {
+            Request request = items.getRequest();
+            if (request != null && request.getErrors() != null) {
+                for (Errors.Error error : request.getErrors().getError()) {
+                    errorList.add(error.getMessage());
+                }
+            }
+        }
+        if (errorList.size() > 0) {
+            throw new AmazonException(errorList.toString());
+        }
     }
 
 }
