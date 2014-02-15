@@ -1,0 +1,12 @@
+<bindings xmlns="http://java.sun.com/xml/ns/jaxws" wsdlLocation="http://webservices.amazon.com/AWSECommerceService/AWSECommerceService.wsdl">
+    <enableAsyncMapping>true</enableAsyncMapping>
+    <enableWrapperStyle>false</enableWrapperStyle>
+    <handler-chains xmlns="http://java.sun.com/xml/ns/javaee">
+        <handler-chain>
+            <handler>
+                <handler-name>SecurityHeaderHandler</handler-name>
+                <handler-class>org.books.handlers.SecurityHeaderHandler</handler-class>
+            </handler>
+        </handler-chain>
+    </handler-chains>
+</bindings>
