@@ -1,0 +1,2 @@
+command to generate the java service interface and portable artifacts:
+wsimport -d build -s generated -p com.amazon.webservices -b bindings.xml http://webservices.amazon.com/AWSECommerceService/AWSECommerceService.wsdl
