@@ -10,12 +10,15 @@ import com.amazon.webservices.ItemSearchRequest;
 import com.amazon.webservices.ItemSearchResponse;
 import com.amazon.webservices.Items;
 import com.amazon.webservices.Request;
+import com.google.common.base.Joiner;
+import static com.google.common.base.Strings.isNullOrEmpty;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -73,21 +76,20 @@ public class AmazonCatalogClient implements AmazonCatalog {
     }
 
     private boolean containsRequiredAttributes(ItemAttributes itemAttributes) {
-        // todo: use google guice
-        return itemAttributes.getISBN() != null && !itemAttributes.getISBN().equals("")
+        return !isNullOrEmpty(itemAttributes.getISBN())
                 && itemAttributes.getAuthor() != null && !itemAttributes.getAuthor().isEmpty()
-                && itemAttributes.getBinding() != null && !itemAttributes.getBinding().equals("")
+                && !isNullOrEmpty(itemAttributes.getBinding())
                 && itemAttributes.getNumberOfPages() != null
                 && itemAttributes.getListPrice() != null && itemAttributes.getListPrice().getAmount() != null
-                && itemAttributes.getPublicationDate() != null && !itemAttributes.getPublicationDate().equals("")
-                && itemAttributes.getPublisher() != null && !itemAttributes.getPublisher().equals("")
-                && itemAttributes.getTitle() != null && !itemAttributes.getTitle().equals("");
+                && !isNullOrEmpty(itemAttributes.getPublicationDate())
+                && !isNullOrEmpty(itemAttributes.getPublisher())
+                && !isNullOrEmpty(itemAttributes.getTitle());
     }
 
     private Book createBook(ItemAttributes itemAttributes) throws ParseException {
         Book book = new Book();
         book.setIsbn(itemAttributes.getISBN());
-        book.setAuthors(convertListToString(itemAttributes.getAuthor()));
+        book.setAuthors(Joiner.on(",").join(itemAttributes.getAuthor()));
         book.setBinding(itemAttributes.getBinding());
         book.setNumberOfPages(itemAttributes.getNumberOfPages().intValue());
         book.setPrice(new BigDecimal(itemAttributes.getListPrice().getAmount()).setScale(2).divide(new BigDecimal(100)));
@@ -101,40 +103,12 @@ public class AmazonCatalogClient implements AmazonCatalog {
         ItemSearchRequest itemSearchRequest = new ItemSearchRequest();
         itemSearchRequest.setSearchIndex(SEARCH_INDEX);
         itemSearchRequest.getResponseGroup().add(RESPONSE_GROUP);
-        itemSearchRequest.setKeywords(getKeywordsString(keywords));
+        itemSearchRequest.setKeywords(Joiner.on(" ").join(Arrays.asList(keywords)));
         itemSearchRequest.setItemPage(BigInteger.valueOf(itemPage));
         ItemSearch itemSearch = new ItemSearch();
         itemSearch.setAssociateTag(new CredentialProperties().getAssociateTag());
         itemSearch.getRequest().add(itemSearchRequest);
         return itemSearch;
-    }
-
-    private String getKeywordsString(String[] keywords) {
-        StringBuilder sb = new StringBuilder();
-        boolean first = true;
-        for (String keyword : keywords) {
-            if (first) {
-                sb.append(keyword);
-                first = false;
-            } else {
-                sb.append(" ").append(keyword);
-            }
-        }
-        return sb.toString();
-    }
-
-    private String convertListToString(List<String> strings) {
-        StringBuilder sb = new StringBuilder();
-        boolean first = true;
-        for (String s : strings) {
-            if (first) {
-                sb.append(s);
-                first = false;
-            } else {
-                sb.append(",").append(s);
-            }
-        }
-        return sb.toString();
     }
 
     private java.sql.Date convertStringToDate(String dateString) throws ParseException {

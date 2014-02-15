@@ -10,7 +10,7 @@ import org.books.service.catalog.AmazonException;
 
 public class StandaloneWsClient {
 
-    private static Logger logger = Logger.getLogger(StandaloneWsClient.class.getName());
+    private static final Logger logger = Logger.getLogger(StandaloneWsClient.class.getName());
 
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
@@ -20,18 +20,21 @@ public class StandaloneWsClient {
         String maxResults = scanner.nextLine();
         try {
             List<Book> books = AmazonCatalogClient.getInstance().searchBooks(keywords.split(" "), convertAndVerifyMaxResult(maxResults));
-            if (books.isEmpty()) {
-                System.out.println("Bummer! No books found with the given parameters. Try it again!");
-            } else {
-                int count = 0;
-                for (Book book : books) {
-                    System.out.println(++count + " : " + book);
-                }
-            }
+            printOut(books);
         } catch (AmazonException ex) {
             logger.log(Level.SEVERE, "Amazon wasn't happy with our request. Try it again!", ex);
         } catch (IllegalArgumentException ex) {
             logger.log(Level.SEVERE, "MaxResult needs to be a digit between 1 and 100.");
+        }
+    }
+
+    private static void printOut(List<Book> books) {
+        if (books.isEmpty()) {
+            System.out.println("Bummer! No books found with the given parameters. Try it again!");
+        }
+        int count = 0;
+        for (Book book : books) {
+            System.out.println(++count + " : " + book);
         }
     }
 
