@@ -7,7 +7,7 @@
         <artifactId>parent</artifactId>
         <version>1.0-SNAPSHOT</version>
     </parent>
-    
+
     <groupId>org.amasoon</groupId>
     <artifactId>services</artifactId>
     <version>1.0-SNAPSHOT</version>
@@ -18,6 +18,7 @@
         <endorsed.dir>${project.build.directory}/endorsed</endorsed.dir>
         <glassfish.port>8080</glassfish.port>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <wsdl.url>http://webservices.amazon.com/AWSECommerceService/AWSECommerceService.wsdl</wsdl.url>
     </properties>
 
     <dependencies>
@@ -53,6 +54,30 @@
 
     <build>
         <plugins>
+            <plugin>
+                <groupId>org.jvnet.jax-ws-commons</groupId>
+                <artifactId>jaxws-maven-plugin</artifactId>
+                <version>2.3</version>
+                <executions>
+                    <execution>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>wsimport</goal>
+                        </goals>
+                        <configuration>
+                            <wsdlUrls>
+                                <wsdlUrl>${wsdl.url}</wsdlUrl>
+                            </wsdlUrls>
+                            <packageName>com.amazon.webservices</packageName>
+                            <sourceDestDir>${project.build.directory}/generated-sources/wsimport</sourceDestDir>
+                            <destDir>${project.build.directory}/generated-sources/handler</destDir>
+                            <bindingFiles>
+                                <bindingFile>${basedir}/src/main/resources/bindings.xml</bindingFile>
+                            </bindingFiles>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
@@ -99,6 +124,14 @@
                 </executions>
             </plugin>
         </plugins>
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+            </resource>
+            <resource>
+                <directory>${project.build.directory}/generated-sources/handler</directory>
+            </resource>
+        </resources>
     </build>
 
 </project>

@@ -1,21 +1,29 @@
 package org.books.service.catalog;
 
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.annotation.Resource;
+import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
-import javax.persistence.criteria.CriteriaQuery;
 import org.books.persistence.catalog.Book;
-import org.books.persistence.catalog.BookQueryFactory;
 
 @Stateless(name = "CatalogService")
 public class CatalogServiceBean implements CatalogService {
 
     @PersistenceContext
     EntityManager em;
+
+    @EJB
+    AmazonCatalog amazonCatalog;
+
+    @Resource(name = "maxResults")
+    private Integer maxResults;
 
     @Override
     public void addBook(Book book) throws BookAlreadyExistsException {
@@ -40,9 +48,14 @@ public class CatalogServiceBean implements CatalogService {
 
     @Override
     public List<Book> searchBooks(String... keywords) {
-        CriteriaQuery<Book> expr = BookQueryFactory.findByKeywords(em, Arrays.asList(keywords));
-        TypedQuery<Book> query = em.createQuery(expr);
-        return query.getResultList();
+        List<Book> results = new ArrayList<>();
+        try {
+            results = amazonCatalog.searchBooks(keywords, maxResults);
+        } catch (AmazonException ex) {
+            Logger.getLogger(CatalogServiceBean.class.getName()).log(Level.SEVERE, null, ex);
+
+        }
+        return results;
     }
 
 }
