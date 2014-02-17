@@ -18,7 +18,7 @@
             <env-entry>
                 <env-entry-name>maxResults</env-entry-name>
                 <env-entry-type>java.lang.Integer</env-entry-type>
-                <env-entry-value>20</env-entry-value>
+                <env-entry-value>25</env-entry-value>
         </session>
     </enterprise-beans>
 
