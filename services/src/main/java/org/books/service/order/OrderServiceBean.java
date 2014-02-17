@@ -30,12 +30,18 @@ import org.books.persistence.customer.Customer;
 import org.books.persistence.order.LineItem;
 import org.books.persistence.order.Order;
 import org.books.persistence.order.Order.Status;
+import org.books.service.catalog.BookNotFoundException;
+import org.books.service.catalog.CatalogService;
+import org.books.persistence.catalog.Book;
+import org.books.service.catalog.BookAlreadyExistsException;
 
 @Stateless(name = "OrderService")
 public class OrderServiceBean implements OrderService {
 
     @EJB
     private MailService mailService;
+    @EJB
+    private CatalogService catalogService;
     @Resource(lookup = "jms/orderQueueFactory")
     private ConnectionFactory connectionFactory;
     @Resource(lookup = "jms/orderQueue")
@@ -47,6 +53,7 @@ public class OrderServiceBean implements OrderService {
     public String placeOrder(Customer customer, List<LineItem> items) throws CreditCardExpiredException {
         final CreditCard creditCard = customer.getCreditCard();
         validateCreditcard(creditCard);
+        storeBooksInLocalDbIfAbsent(items);
 
         Order order = new Order();
         order.setOrderNumber(UUID.randomUUID().toString());
@@ -63,6 +70,22 @@ public class OrderServiceBean implements OrderService {
         mailService.sendMail(order, MessageBuilder.MailType.OrderPlaced);
         return order.getOrderNumber();
 
+    }
+
+    private void storeBooksInLocalDbIfAbsent(List<LineItem> items) {
+        Book book;
+        for (LineItem item : items) {
+            book = item.getBook();
+            try {
+                catalogService.findBook(book.getIsbn());
+            } catch (BookNotFoundException e) {
+                try {
+                    catalogService.addBook(book);
+                } catch (BookAlreadyExistsException ex) {
+                    Logger.getLogger(OrderServiceBean.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+        }
     }
 
     private void validateCreditcard(final CreditCard creditCard) throws CreditCardExpiredException {
