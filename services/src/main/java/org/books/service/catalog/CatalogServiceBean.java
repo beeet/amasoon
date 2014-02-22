@@ -48,6 +48,11 @@ public class CatalogServiceBean implements CatalogService {
 
     @Override
     public List<Book> searchBooks(String... keywords) {
+        return searchBooks(maxResults, keywords);
+    }
+
+    @Override
+    public List<Book> searchBooks(Integer maxResults, String... keywords) {
         List<Book> results = new ArrayList<>();
         try {
             results = amazonCatalog.searchBooks(keywords, maxResults);

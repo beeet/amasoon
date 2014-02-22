@@ -7,6 +7,10 @@
                 <handler-name>SecurityHeaderHandler</handler-name>
                 <handler-class>org.books.handlers.SecurityHeaderHandler</handler-class>
             </handler>
+            <handler>
+                <handler-name>LogHandler</handler-name>
+                <handler-class>org.books.handlers.LogHandler</handler-class>
+            </handler>
         </handler-chain>
     </handler-chains>
 </bindings>

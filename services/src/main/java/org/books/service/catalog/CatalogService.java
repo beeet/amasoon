@@ -12,4 +12,6 @@ public interface CatalogService {
     public Book findBook(String isbn) throws BookNotFoundException;
 
     public List<Book> searchBooks(String... keywords);
+
+    public List<Book> searchBooks(Integer maxResults, String... keywords);
 }
