@@ -1,6 +1,5 @@
 package org.books.service.catalog;
 
-import java.io.Serializable;
 import java.util.List;
 import javax.ejb.Remote;
 import org.books.persistence.catalog.Book;

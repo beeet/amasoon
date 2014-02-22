@@ -1,20 +1,23 @@
 package ch.bfh.amasoon.presenter;
 
 import ch.bfh.amasoon.commons.MessageFactory;
-import ch.bfh.amasoon.model.catalog.Book;
-import ch.bfh.amasoon.model.catalog.CatalogServiceMock;
 import com.google.common.base.Strings;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import javax.ejb.EJB;
 import javax.enterprise.context.SessionScoped;
 import javax.inject.Named;
+import org.books.persistence.catalog.Book;
+import org.books.service.catalog.CatalogService;
 
 @Named
 @SessionScoped
 public class CatalogBean implements Serializable {
     private static final String NO_BOOKS_FOUND = "ch.bfh.amasoon.NO_BOOKS_FOUND";
-    private final CatalogServiceMock catalogService = CatalogServiceMock.getInstance();
+    //private final CatalogServiceMock catalogService = CatalogServiceMock.getInstance();
+    @EJB
+    private CatalogService catalogService;
     private String keywords;
     private List<Book> books;
     private Book selectedBook;
