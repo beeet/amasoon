@@ -11,5 +11,5 @@
         <module>presentation</module>
         <module>services</module>
         <module>ear</module>
-    </modules>
+  </modules>
 </project>
