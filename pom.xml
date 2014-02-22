@@ -8,8 +8,8 @@
     <name>amasoon</name>
  
     <modules>
-        <module>presentation</module>
-        <module>services</module>
         <module>ear</module>
+        <module>services</module>
+        <module>presentation</module>
   </modules>
 </project>
