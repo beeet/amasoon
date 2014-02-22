@@ -6,7 +6,7 @@ import ch.bfh.amasoon.model.customer.CreditCard;
 import ch.bfh.amasoon.model.customer.Customer;
 import ch.bfh.amasoon.model.customer.CustomerAlreadyExistsException;
 import ch.bfh.amasoon.model.customer.CustomerNotFoundException;
-import ch.bfh.amasoon.model.customer.CustomerService;
+import ch.bfh.amasoon.model.customer.CustomerServiceMock;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import java.io.Serializable;
@@ -23,7 +23,7 @@ public class CustomerBean implements Serializable {
     private static final String LOGIN_FAILED = "ch.bfh.amasoon.LOGIN_FAILED";
     private static final String NO_SUCH_CUSTOMER = "ch.bfh.amasoon.NO_SUCH_CUSTOMER";
     private static final String CUSTOMER_ALREADY_EXISTS = "ch.bfh.amasoon.CUSTOMER_ALREADY_EXISTS";
-    private final CustomerService customerService = CustomerService.getInstance();
+    private final CustomerServiceMock customerService = CustomerServiceMock.getInstance();
     @Inject
     private OrderBean orderBean;
     private Customer customer;

@@ -8,7 +8,7 @@ import ch.bfh.amasoon.model.order.CreditCardExpiredException;
 import ch.bfh.amasoon.model.order.LineItem;
 import ch.bfh.amasoon.model.order.OrderNotCancelableException;
 import ch.bfh.amasoon.model.order.OrderNotFoundException;
-import ch.bfh.amasoon.model.order.OrderService;
+import ch.bfh.amasoon.model.order.OrderServiceMock;
 import com.google.common.base.Strings;
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -24,7 +24,7 @@ public class OrderBean implements Serializable {
     private static final String PLACE_ORDER_FAILED = "ch.bfh.amasoon.presenter.OrderBean.PLACE_ORDER_FAILED";
     private static final String NO_BOOK_FOUND = "ch.bfh.amasoon.NO_BOOK_FOUND";
     private static final String ORDER_NOT_CANCELABLE = "ch.bfh.amasoon.ORDER_NOT_CANCELABLE";
-    private final OrderService orderService = OrderService.getInstance();
+    private final OrderServiceMock orderService = OrderServiceMock.getInstance();
     @Inject
     private CustomerBean customerBean;
     private List<LineItem> lineItems = new ArrayList<>();

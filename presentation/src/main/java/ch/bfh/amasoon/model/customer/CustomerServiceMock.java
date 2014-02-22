@@ -14,22 +14,22 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 
-public class CustomerService {
+public class CustomerServiceMock {
 
     private static final String CUSTOMER_DATA = "/data/customers.xml";
-    private static final Logger logger = Logger.getLogger(CustomerService.class.getName());
-    private static CustomerService instance;
+    private static final Logger logger = Logger.getLogger(CustomerServiceMock.class.getName());
+    private static CustomerServiceMock instance;
     private Map<String, Customer> customers = new TreeMap<>();
     private MessageDigest messageDigest;
 
-    public static CustomerService getInstance() {
+    public static CustomerServiceMock getInstance() {
         if (instance == null) {
-            instance = new CustomerService();
+            instance = new CustomerServiceMock();
         }
         return instance;
     }
 
-    private CustomerService() {
+    private CustomerServiceMock() {
         try {
             messageDigest = MessageDigest.getInstance("SHA-256");
         } catch (NoSuchAlgorithmException ex) {

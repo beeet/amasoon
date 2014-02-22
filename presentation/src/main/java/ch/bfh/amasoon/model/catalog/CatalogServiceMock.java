@@ -11,21 +11,21 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 
-public class CatalogService {
+public class CatalogServiceMock {
 
     private static final String CATALOG_DATA = "/data/catalog.xml";
-    private static final Logger logger = Logger.getLogger(CatalogService.class.getName());
-    private static CatalogService instance;
+    private static final Logger logger = Logger.getLogger(CatalogServiceMock.class.getName());
+    private static CatalogServiceMock instance;
     private Map<String, Book> books = new TreeMap<>();
 
-    public static CatalogService getInstance() {
+    public static CatalogServiceMock getInstance() {
         if (instance == null) {
-            instance = new CatalogService();
+            instance = new CatalogServiceMock();
         }
         return instance;
     }
 
-    private CatalogService() {
+    private CatalogServiceMock() {
         try {
             JAXBContext context = JAXBContext.newInstance(Catalog.class);
             Unmarshaller unmarshaller = context.createUnmarshaller();
