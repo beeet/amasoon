@@ -23,7 +23,7 @@ public class CredentialProperties {
     private void load() {
         try {
             props = new Properties();
-            props.load(new FileReader("src/credentials.properties"));
+            props.load(new FileReader("C:\\Users\\beeet\\Documents\\NetBeansProjects\\amasoon\\services\\src\\main\\resources\\credentials.properties"));
         } catch (IOException ex) {
             Logger.getLogger(CredentialProperties.class.getName()).log(Level.SEVERE, null, ex);
         }
