@@ -18,7 +18,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import org.books.persistence.order.Order;
 
-@MessageDriven(mappedName = "jms/orderQueue", activationConfig = {
+@MessageDriven(name = "OrderProcessor", mappedName = "jms/orderQueue", activationConfig = {
     @ActivationConfigProperty(propertyName = "destinationType", propertyValue = "javax.jms.Queue")
 })
 public class OrderProcessorBean implements MessageListener {
