@@ -1,5 +1,9 @@
 package ch.bfh.amasoon.model.order;
 
+import ch.bfh.amasoon.model.customer.CreditCard;
+import ch.bfh.amasoon.model.customer.Customer;
+import ch.bfh.amasoon.model.customer.CustomerNotFoundException;
+import ch.bfh.amasoon.model.customer.CustomerServiceMock;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -17,16 +21,11 @@ import java.util.TimerTask;
 import java.util.TreeMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import ch.bfh.amasoon.model.catalog.CatalogServiceMock;
-import ch.bfh.amasoon.model.customer.CreditCard;
-import ch.bfh.amasoon.model.customer.Customer;
-import ch.bfh.amasoon.model.customer.CustomerNotFoundException;
-import ch.bfh.amasoon.model.customer.CustomerServiceMock;
 
 public class OrderServiceMock {
 
     private static final long ORDER_PROCESS_TIME = 600000;
-    private static final Logger logger = Logger.getLogger(CatalogServiceMock.class.getName());
+    private static final Logger logger = Logger.getLogger(OrderServiceMock.class.getName());
     private static OrderServiceMock instance;
     private CustomerServiceMock customerService = CustomerServiceMock.getInstance();
     private Map<String, Order> orders = new TreeMap<>();
