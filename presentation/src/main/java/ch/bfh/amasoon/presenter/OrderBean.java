@@ -1,7 +1,6 @@
 package ch.bfh.amasoon.presenter;
 
 import ch.bfh.amasoon.commons.MessageFactory;
-import ch.bfh.amasoon.model.catalog.Book;
 import ch.bfh.amasoon.model.customer.Customer;
 import ch.bfh.amasoon.model.customer.CustomerNotFoundException;
 import ch.bfh.amasoon.model.order.CreditCardExpiredException;
@@ -17,6 +16,7 @@ import java.util.List;
 import javax.enterprise.context.SessionScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
+import org.books.persistence.catalog.Book;
 
 @Named
 @SessionScoped

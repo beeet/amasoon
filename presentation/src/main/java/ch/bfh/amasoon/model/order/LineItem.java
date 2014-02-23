@@ -1,7 +1,7 @@
 package ch.bfh.amasoon.model.order;
 
 import java.io.Serializable;
-import ch.bfh.amasoon.model.catalog.Book;
+import org.books.persistence.catalog.Book;
 
 public class LineItem implements Serializable {
 
