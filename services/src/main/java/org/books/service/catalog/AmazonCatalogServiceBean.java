@@ -23,9 +23,9 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.annotation.PostConstruct;
-import javax.annotation.Resource;
 import javax.ejb.Stateless;
 import org.books.persistence.catalog.Book;
+import org.books.utils.CredentialProperties;
 
 @Stateless(name = "AmazonCatalogService")
 public class AmazonCatalogServiceBean implements AmazonCatalog {
@@ -34,17 +34,6 @@ public class AmazonCatalogServiceBean implements AmazonCatalog {
     private static final int MAX_ITEM_PAGE = 10;
     private static final String RESPONSE_GROUP = "ItemAttributes";
     private static final String SEARCH_INDEX = "Books";
-
-    @Resource(name = "associateTag")
-    private String associateTag;
-
-    public String getAssociateTag() {
-        return associateTag;
-    }
-
-    public void setAssociateTag(String associateTag) {
-        this.associateTag = associateTag;
-    }
 
     @PostConstruct
     public void initialize() {
@@ -113,7 +102,7 @@ public class AmazonCatalogServiceBean implements AmazonCatalog {
         itemSearchRequest.setKeywords(Joiner.on(" ").join(Arrays.asList(keywords)));
         itemSearchRequest.setItemPage(BigInteger.valueOf(itemPage));
         ItemSearch itemSearch = new ItemSearch();
-        itemSearch.setAssociateTag(associateTag);
+        itemSearch.setAssociateTag(new CredentialProperties().getAssociateTag());
         itemSearch.getRequest().add(itemSearchRequest);
         return itemSearch;
     }

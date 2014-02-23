@@ -1,6 +1,5 @@
 package org.books.utils;
 
-import java.io.FileReader;
 import java.io.IOException;
 import java.util.Properties;
 import java.util.logging.Level;
@@ -23,7 +22,7 @@ public class CredentialProperties {
     private void load() {
         try {
             props = new Properties();
-            props.load(new FileReader("C:\\Users\\beeet\\Documents\\NetBeansProjects\\amasoon\\services\\src\\main\\resources\\credentials.properties"));
+            props.load(Thread.currentThread().getContextClassLoader().getResourceAsStream("credentials.properties"));
         } catch (IOException ex) {
             Logger.getLogger(CredentialProperties.class.getName()).log(Level.SEVERE, null, ex);
         }

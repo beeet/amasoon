@@ -13,14 +13,6 @@
                 <env-entry-value>25</env-entry-value>
             </env-entry>
         </session>
-        <session>
-            <ejb-name>AmazonCatalogService</ejb-name>
-            <env-entry>
-                <env-entry-name>associateTag</env-entry-name>
-                <env-entry-type>java.lang.String</env-entry-type>
-                <env-entry-value>test0e5d-20</env-entry-value>
-            </env-entry>
-        </session>
         <message-driven>
             <ejb-name>OrderProcessor</ejb-name>
             <env-entry>
