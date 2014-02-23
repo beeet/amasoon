@@ -9,7 +9,9 @@ import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
+import javax.ws.rs.core.MediaType;
 import org.books.persistence.catalog.Book;
+import org.books.service.catalog.AmazonException;
 import org.books.service.catalog.CatalogService;
 
 @Path("catalog")
@@ -25,8 +27,8 @@ public class RestCatalogServiceResource {
     }
 
     @GET
-    @Produces("application/xml")
-    public List<BookDto> searchBooks(@QueryParam("keywords") String keywords, @QueryParam("maxresults") Integer maxResults) {
+    @Produces(MediaType.APPLICATION_XML)
+    public List<ch.bfh.amasoon.rest.Book> searchBooks(@QueryParam("keywords") String keywords, @QueryParam("maxresults") Integer maxResults) {
         List<Book> foundBooks;
         try {
             if (verifyInputAndCheckIfMaxResultIsDefined(keywords, maxResults)) {
@@ -40,9 +42,9 @@ public class RestCatalogServiceResource {
         return convertBooksToDtos(foundBooks);
     }
 
-    private List<BookDto> convertBooksToDtos(List<Book> books) {
-        List<BookDto> bookDtos = new ArrayList<>();
-        for (Book book : books) {
+    private List<ch.bfh.amasoon.rest.Book> convertBooksToDtos(List<org.books.persistence.catalog.Book> books) {
+        List<ch.bfh.amasoon.rest.Book> bookDtos = new ArrayList<>();
+        for (org.books.persistence.catalog.Book book : books) {
             bookDtos.add(convertToDto(book));
         }
         return bookDtos;
@@ -55,8 +57,8 @@ public class RestCatalogServiceResource {
         return maxResult == null;
     }
 
-    private BookDto convertToDto(Book book) {
-        BookDto dto = new BookDto();
+    private ch.bfh.amasoon.rest.Book convertToDto(org.books.persistence.catalog.Book book) {
+        ch.bfh.amasoon.rest.Book dto = new ch.bfh.amasoon.rest.Book();
         dto.setIsbn(book.getIsbn());
         dto.setAuthors(book.getAuthors());
         dto.setBinding(book.getBinding());

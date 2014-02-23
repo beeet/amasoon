@@ -2,11 +2,17 @@ package ch.bfh.amasoon.rest;
 
 import java.math.BigDecimal;
 import java.util.Date;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlType;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 @XmlRootElement(name = "book")
-public class BookDto {
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlType(propOrder = {"isbn", "title", "authors", "publisher", "publicationDate", "binding", "numberOfPages", "price"})
+public class Book {
 
     @XmlElement(name = "isbn")
     private String isbn;
@@ -17,6 +23,7 @@ public class BookDto {
     @XmlElement(name = "publisher")
     private String publisher;
     @XmlElement(name = "date")
+    @XmlJavaTypeAdapter(DateAdapter.class)
     private Date publicationDate;
     @XmlElement(name = "binding")
     private String binding;
