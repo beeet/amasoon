@@ -7,11 +7,10 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import ch.bfh.amasoon.model.catalog.CatalogServiceMock;
 
 public class Utils {
 
-    private static final Logger logger = Logger.getLogger(CatalogServiceMock.class.getName());
+    private static final Logger logger = Logger.getLogger(Utils.class.getName());
 
     @SuppressWarnings("unchecked")
     public static <T> T clone(T object) {
