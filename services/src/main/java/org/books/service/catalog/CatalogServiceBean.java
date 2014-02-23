@@ -2,8 +2,6 @@ package org.books.service.catalog;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.annotation.Resource;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
@@ -47,17 +45,17 @@ public class CatalogServiceBean implements CatalogService {
     }
 
     @Override
-    public List<Book> searchBooks(String... keywords) {
+    public List<Book> searchBooks(String... keywords) throws SearchException {
         return searchBooks(maxResults, keywords);
     }
 
     @Override
-    public List<Book> searchBooks(Integer maxResults, String... keywords) {
+    public List<Book> searchBooks(Integer maxResults, String... keywords) throws SearchException {
         List<Book> results = new ArrayList<>();
         try {
             results = amazonCatalog.searchBooks(keywords, maxResults);
         } catch (AmazonException ex) {
-            Logger.getLogger(CatalogServiceBean.class.getName()).log(Level.SEVERE, null, ex);
+            throw new SearchException(ex);
 
         }
         return results;
