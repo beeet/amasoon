@@ -20,7 +20,7 @@
                     <ui:param name="title" value="#{translations.orderSummaryTitle}" />
                 </ui:include>
                 <h:form>
-                    <h:dataTable class="table table-striped" id="data" value="#{customerAdminBean.selectedOrder.items}" var="lineItem">
+                    <h:dataTable class="table table-striped" id="data" value="#{customerAdminBean.selectedOrder.lineItems}" var="lineItem">
                         <h:column>
                             <f:facet name="header">
                                 <h:outputText value="#{translations.title}"/>

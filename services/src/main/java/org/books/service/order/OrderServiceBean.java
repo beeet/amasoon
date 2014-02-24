@@ -1,8 +1,8 @@
 package org.books.service.order;
 
-import com.google.common.collect.Lists;
 import java.math.BigDecimal;
 import java.sql.Date;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
@@ -61,14 +61,13 @@ public class OrderServiceBean implements OrderService {
         }
         final CreditCard creditCard = customer.getCreditCard();
         validateCreditcard(creditCard);
-        storeBooksInLocalDbIfAbsent(items);
         Order order = new Order();
         order.setOrderNumber(UUID.randomUUID().toString());
         order.setOrderDate(new Date(System.currentTimeMillis()));
         order.setCustomer(customer);
         order.setAddress(customer.getAddress());
         order.setCreditCard(creditCard);
-        order.setLineItems(Lists.newArrayList(items));
+        order.setLineItems(storeBooksInLocalDbIfAbsent(items));
         order.setAmount(summarizeTotalOrderAmount(items));
         em.persist(order);
         em.flush();
@@ -78,20 +77,25 @@ public class OrderServiceBean implements OrderService {
         return order.getOrderNumber();
     }
 
-    private void storeBooksInLocalDbIfAbsent(List<LineItem> items) {
+    private List<LineItem> storeBooksInLocalDbIfAbsent(List<LineItem> items) {
+        List<LineItem> lineItemsWithPersistedBooks = new ArrayList<>();
         Book book;
         for (LineItem item : items) {
             book = item.getBook();
             try {
-                catalogService.findBook(book.getIsbn());
+                book = catalogService.findBook(book.getIsbn());
             } catch (BookNotFoundException e) {
                 try {
                     catalogService.addBook(book);
-                } catch (BookAlreadyExistsException ex) {
+                    book = catalogService.findBook(book.getIsbn());
+                } catch (BookAlreadyExistsException | BookNotFoundException ex) {
                     Logger.getLogger(OrderServiceBean.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
+            item.setBook(book);
+            lineItemsWithPersistedBooks.add(item);
         }
+        return lineItemsWithPersistedBooks;
     }
 
     private void validateCreditcard(final CreditCard creditCard) throws CreditCardExpiredException {
@@ -124,6 +128,7 @@ public class OrderServiceBean implements OrderService {
     @Override
     @RolesAllowed("manager")
     public void cancelOrder(Order order) throws OrderNotCancelableException {
+        order = em.merge(order);
         if (!order.isOpen()) {
             throw new OrderNotCancelableException();
         }

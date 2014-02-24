@@ -51,7 +51,7 @@ public class Order extends BaseEntity {
     @NotNull
     @Embedded
     private CreditCard creditCard;
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @OneToMany(cascade = CascadeType.PERSIST, fetch = FetchType.EAGER)
     private List<LineItem> lineItems = Lists.newArrayList();
 
     public Order() {
