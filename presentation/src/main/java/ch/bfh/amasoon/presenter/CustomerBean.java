@@ -17,9 +17,8 @@ import org.books.service.customer.CustomerNotFoundException;
 import org.books.service.customer.CustomerService;
 import org.books.service.security.AuthenticationService;
 import org.books.service.security.InvalidPasswordException;
-import org.books.service.security.UserNotFoundException;
-import org.books.persistence.security.User;
 import org.books.service.security.UserAlreadyExistsException;
+import org.books.service.security.UserNotFoundException;
 
 @Named
 @SessionScoped

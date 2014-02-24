@@ -27,6 +27,11 @@ public class Customer extends BaseEntity implements Serializable {
     @NotNull
     private CreditCard creditCard;
 
+    public Customer() {
+        this.address = new Address();
+        this.creditCard = new CreditCard();
+    }
+
     public Address getAddress() {
         return address;
     }
