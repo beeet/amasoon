@@ -34,6 +34,8 @@ import org.books.persistence.order.Order.Status;
 import org.books.service.catalog.BookAlreadyExistsException;
 import org.books.service.catalog.BookNotFoundException;
 import org.books.service.catalog.CatalogService;
+import org.books.service.customer.CustomerNotFoundException;
+import org.books.service.customer.CustomerService;
 
 @Stateless(name = "OrderService")
 public class OrderServiceBean implements OrderService {
@@ -42,6 +44,8 @@ public class OrderServiceBean implements OrderService {
     private MailService mailService;
     @EJB
     private CatalogService catalogService;
+    @EJB
+    private CustomerService customerService;
     @Resource(lookup = "jms/orderQueueFactory")
     private ConnectionFactory connectionFactory;
     @Resource(lookup = "jms/orderQueue")
@@ -51,10 +55,13 @@ public class OrderServiceBean implements OrderService {
 
     @Override
     public String placeOrder(Customer customer, List<LineItem> items) throws CreditCardExpiredException {
+        try {
+            customer = customerService.findCustomer(customer.getEmail());
+        } catch (CustomerNotFoundException ex) {
+        }
         final CreditCard creditCard = customer.getCreditCard();
         validateCreditcard(creditCard);
         storeBooksInLocalDbIfAbsent(items);
-
         Order order = new Order();
         order.setOrderNumber(UUID.randomUUID().toString());
         order.setOrderDate(new Date(System.currentTimeMillis()));
@@ -69,7 +76,6 @@ public class OrderServiceBean implements OrderService {
         sendMessageToOrderProcessor(order.getId());
         mailService.sendMail(order, MessageBuilder.MailType.OrderPlaced);
         return order.getOrderNumber();
-
     }
 
     private void storeBooksInLocalDbIfAbsent(List<LineItem> items) {
