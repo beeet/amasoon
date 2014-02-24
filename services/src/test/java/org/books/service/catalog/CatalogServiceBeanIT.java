@@ -54,7 +54,7 @@ public class CatalogServiceBeanIT {
         catalogService.findBook("gugus");
     }
 
-    @Test(dependsOnMethods = "addBook")
+    @Test(dependsOnMethods = "addBook", enabled = false)
     public void searchBooks_FindOneBook() throws Exception {
         //arrange
         book2 = createAnotherBook();
@@ -70,7 +70,7 @@ public class CatalogServiceBeanIT {
         assertTrue(distinctedBooks.containsKey("Professional Java JDK 6 Edition Simpson"));
     }
 
-    @Test(dependsOnMethods = "searchBooks_FindOneBook")
+    @Test(dependsOnMethods = "searchBooks_FindOneBook", enabled = false)
     public void searchBooks_FindTwoBooks() throws Exception {
         //act
         List<Book> foundBooks = catalogService.searchBooks("Simpson");
@@ -84,7 +84,7 @@ public class CatalogServiceBeanIT {
         assertTrue(distinctedBooks.containsKey("Java for Dummies"));
     }
 
-    @Test(dependsOnMethods = "searchBooks_FindOneBook")
+    @Test(dependsOnMethods = "searchBooks_FindOneBook", enabled = false)
     public void searchBooks_FindNoBooks() throws Exception {
         //act
         List<Book> foundBooks = catalogService.searchBooks("gugus");
