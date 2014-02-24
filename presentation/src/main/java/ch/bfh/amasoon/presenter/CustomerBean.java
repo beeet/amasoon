@@ -72,7 +72,7 @@ public class CustomerBean implements Serializable {
         Preconditions.checkNotNull(customer);
         try {
             customerService.addCustomer(customer);
-            authenticationService.register(email, password);
+            authenticationService.register(customer.getEmail(), password);
             return navigate();
         } catch (CustomerAlreadyExistsException | UserAlreadyExistsException ex) {
             MessageFactory.info(CUSTOMER_ALREADY_EXISTS);

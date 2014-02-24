@@ -25,15 +25,15 @@ import javax.persistence.TypedQuery;
 import javax.validation.ConstraintViolation;
 import javax.validation.Validation;
 import javax.validation.ValidatorFactory;
+import org.books.persistence.catalog.Book;
 import org.books.persistence.customer.CreditCard;
 import org.books.persistence.customer.Customer;
 import org.books.persistence.order.LineItem;
 import org.books.persistence.order.Order;
 import org.books.persistence.order.Order.Status;
+import org.books.service.catalog.BookAlreadyExistsException;
 import org.books.service.catalog.BookNotFoundException;
 import org.books.service.catalog.CatalogService;
-import org.books.persistence.catalog.Book;
-import org.books.service.catalog.BookAlreadyExistsException;
 
 @Stateless(name = "OrderService")
 public class OrderServiceBean implements OrderService {

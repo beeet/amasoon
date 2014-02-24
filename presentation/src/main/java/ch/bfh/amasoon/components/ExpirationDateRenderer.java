@@ -1,10 +1,10 @@
 package ch.bfh.amasoon.components;
 
 import java.io.IOException;
-import java.sql.Date;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.Map;
 import java.util.TimeZone;
 import javax.faces.component.UIComponent;

@@ -1,9 +1,11 @@
 package org.books.persistence.catalog;
 
 import java.math.BigDecimal;
-import java.sql.Date;
+import java.util.Date;
 import javax.persistence.Entity;
 import javax.persistence.NamedQuery;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
 import org.books.persistence.BaseEntity;
 
@@ -23,6 +25,7 @@ public class Book extends BaseEntity {
     @NotNull
     private String publisher;
     @NotNull
+    @Temporal(TemporalType.DATE)
     private Date publicationDate;
     private String binding;
     private Integer numberOfPages;

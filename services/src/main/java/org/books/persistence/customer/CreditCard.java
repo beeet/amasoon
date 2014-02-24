@@ -1,10 +1,12 @@
 package org.books.persistence.customer;
 
 import java.io.Serializable;
-import java.sql.Date;
+import java.util.Date;
 import javax.persistence.Embeddable;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
 @Embeddable
 public class CreditCard implements Serializable {
@@ -17,7 +19,8 @@ public class CreditCard implements Serializable {
     @Enumerated(EnumType.STRING)
     private Type type;
     private String number;
-    @ExpirationDateConstraint //TODO evt. reuse Validator from webtier
+    @Temporal(TemporalType.DATE)
+    @ExpirationDateConstraint
     private Date expirationDate;
 
     public Type getType() {
