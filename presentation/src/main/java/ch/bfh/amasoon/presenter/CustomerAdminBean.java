@@ -1,7 +1,6 @@
 package ch.bfh.amasoon.presenter;
 
 import ch.bfh.amasoon.commons.MessageFactory;
-import ch.bfh.amasoon.model.order.Order;
 import com.google.common.base.Strings;
 import java.io.Serializable;
 import java.util.logging.Level;
@@ -10,6 +9,7 @@ import javax.ejb.EJB;
 import javax.enterprise.context.SessionScoped;
 import javax.inject.Named;
 import org.books.persistence.customer.Customer;
+import org.books.persistence.order.Order;
 import org.books.service.customer.CustomerNotFoundException;
 import org.books.service.customer.CustomerService;
 
