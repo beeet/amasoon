@@ -16,18 +16,18 @@ and open the template in the editor.
     <h:body>
         <ui:composition>
             <h5>#{title}</h5>
-            <h:dataTable class="table table-striped" id="data" value="#{customerAdminBean.customer.orders}" var="order" rendered="#{not empty customerAdminBean.customer.orders}">
+            <h:dataTable class="table table-striped" id="data" value="#{customerAdminBean.orders}" var="order" rendered="#{not empty customerAdminBean.orders}">
                 <h:column>
                     <f:facet name="header">
                         <h:outputText value="#{translations.ordersOrderNumber}"/>
                     </f:facet>
-                    <h:commandLink action="#{customerAdminBean.displayOrder(order)}" value="#{order.number}" />
+                    <h:commandLink action="#{customerAdminBean.displayOrder(order)}" value="#{order.orderNumber}" />
                 </h:column>
                 <h:column>
                     <f:facet name="header">
                         <h:outputText value="#{translations.ordersDate}"/>
                     </f:facet>
-                    <h:outputText value="#{order.date}">
+                    <h:outputText value="#{order.orderDate}">
                         <f:convertDateTime type="date" />
                     </h:outputText>
                 </h:column>
@@ -48,11 +48,11 @@ and open the template in the editor.
                     <h:outputText value="#{translations.ordersStatusCanceled}" rendered="#{order.status == 'canceled'}"/>
                 </h:column>
                 <h:column>
-                    <h:commandButton class="btn btn-danger btn-small"  action="#{orderBean.cancelOrder(order.number)}" 
+                    <h:commandButton class="btn btn-danger btn-small"  action="#{orderBean.cancelOrder(order.orderNumber)}" 
                                      value="#{translations.ordersDelete}" rendered="#{order.status == 'open'}" />
                 </h:column>
             </h:dataTable>
-            <h:outputText value="#{translations.ordersNoOrders}" rendered="#{empty customerAdminBean.customer.orders}" />
+            <h:outputText value="#{translations.ordersNoOrders}" rendered="#{empty customerAdminBean.orders}" />
 
         </ui:composition>
     </h:body>

@@ -3,6 +3,7 @@ package ch.bfh.amasoon.presenter;
 import ch.bfh.amasoon.commons.MessageFactory;
 import com.google.common.base.Strings;
 import java.io.Serializable;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.ejb.EJB;
@@ -12,6 +13,7 @@ import org.books.persistence.customer.Customer;
 import org.books.persistence.order.Order;
 import org.books.service.customer.CustomerNotFoundException;
 import org.books.service.customer.CustomerService;
+import org.books.service.order.OrderService;
 
 @Named
 @SessionScoped
@@ -20,9 +22,15 @@ public class CustomerAdminBean implements Serializable {
     private static final String NO_SUCH_CUSTOMER = "ch.bfh.amasoon.NO_SUCH_CUSTOMER";
     @EJB
     private CustomerService customerService;
+    @EJB
+    private OrderService orderService;
     private String emailToSearch;
     private Customer customer;
     private Order selectedOrder;
+
+    public List<Order> getOrders() {
+        return orderService.getOrders(customer);
+    }
 
     public String getEmailToSearch() {
         return emailToSearch;
