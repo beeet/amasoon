@@ -1,20 +1,25 @@
 package ch.bfh.amasoon.presenter;
 
 import ch.bfh.amasoon.commons.MessageFactory;
-import ch.bfh.amasoon.model.customer.AuthenticationException;
-import ch.bfh.amasoon.model.customer.CreditCard;
-import ch.bfh.amasoon.model.customer.Customer;
-import ch.bfh.amasoon.model.customer.CustomerAlreadyExistsException;
-import ch.bfh.amasoon.model.customer.CustomerNotFoundException;
-import ch.bfh.amasoon.model.customer.CustomerServiceMock;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import java.io.Serializable;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.ejb.EJB;
 import javax.enterprise.context.SessionScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
+import org.books.persistence.customer.CreditCard;
+import org.books.persistence.customer.Customer;
+import org.books.service.customer.CustomerAlreadyExistsException;
+import org.books.service.customer.CustomerNotFoundException;
+import org.books.service.customer.CustomerService;
+import org.books.service.security.AuthenticationService;
+import org.books.service.security.InvalidPasswordException;
+import org.books.service.security.UserNotFoundException;
+import org.books.persistence.security.User;
+import org.books.service.security.UserAlreadyExistsException;
 
 @Named
 @SessionScoped
@@ -23,7 +28,10 @@ public class CustomerBean implements Serializable {
     private static final String LOGIN_FAILED = "ch.bfh.amasoon.LOGIN_FAILED";
     private static final String NO_SUCH_CUSTOMER = "ch.bfh.amasoon.NO_SUCH_CUSTOMER";
     private static final String CUSTOMER_ALREADY_EXISTS = "ch.bfh.amasoon.CUSTOMER_ALREADY_EXISTS";
-    private final CustomerServiceMock customerService = CustomerServiceMock.getInstance();
+    @EJB
+    private CustomerService customerService;
+    @EJB
+    private AuthenticationService authenticationService;
     @Inject
     private OrderBean orderBean;
     private Customer customer;
@@ -65,8 +73,9 @@ public class CustomerBean implements Serializable {
         Preconditions.checkNotNull(customer);
         try {
             customerService.addCustomer(customer);
+            authenticationService.register(email, password);
             return navigate();
-        } catch (CustomerAlreadyExistsException ex) {
+        } catch (CustomerAlreadyExistsException | UserAlreadyExistsException ex) {
             MessageFactory.info(CUSTOMER_ALREADY_EXISTS);
             Logger.getLogger(CustomerBean.class.getName()).log(Level.SEVERE, null, ex);
             return null;
@@ -85,19 +94,18 @@ public class CustomerBean implements Serializable {
 
     public String login() {
         try {
-            setCustomer(customerService.authenticateCustomer(email, password));
+            Customer customer = customerService.findCustomer(email);
+            authenticationService.authenticate(email, password);
+            setCustomer(customer);
             return isCartEmpty() ? "search" : "order";
-        } catch (AuthenticationException ex) {
-            try {
-                customerService.findCustomer(email);
-                MessageFactory.info(LOGIN_FAILED);
-                Logger.getLogger(CustomerBean.class.getName()).log(Level.SEVERE, null, ex);
-                return null;
-            } catch (CustomerNotFoundException ex1) {
-                MessageFactory.info(NO_SUCH_CUSTOMER);
-                Logger.getLogger(CustomerBean.class.getName()).log(Level.SEVERE, null, ex1);
-                return null;
-            }
+        } catch (CustomerNotFoundException | UserNotFoundException e) {
+            MessageFactory.info(NO_SUCH_CUSTOMER);
+            Logger.getLogger(CustomerBean.class.getName()).log(Level.SEVERE, null, e);
+            return null;
+        } catch (InvalidPasswordException e) {
+            MessageFactory.info(LOGIN_FAILED);
+            Logger.getLogger(CustomerBean.class.getName()).log(Level.SEVERE, null, e);
+            return null;
         }
     }
 

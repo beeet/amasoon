@@ -1,30 +1,30 @@
 package ch.bfh.amasoon.presenter;
 
 import ch.bfh.amasoon.commons.MessageFactory;
-import ch.bfh.amasoon.model.customer.Customer;
-import ch.bfh.amasoon.model.customer.CustomerNotFoundException;
-import ch.bfh.amasoon.model.order.CreditCardExpiredException;
-import ch.bfh.amasoon.model.order.LineItem;
-import ch.bfh.amasoon.model.order.OrderNotCancelableException;
-import ch.bfh.amasoon.model.order.OrderNotFoundException;
-import ch.bfh.amasoon.model.order.OrderServiceMock;
-import com.google.common.base.Strings;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import javax.ejb.EJB;
 import javax.enterprise.context.SessionScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 import org.books.persistence.catalog.Book;
+import org.books.persistence.order.LineItem;
+import org.books.service.order.CreditCardExpiredException;
+import org.books.service.order.OrderNotCancelableException;
+import org.books.service.order.OrderNotFoundException;
+import org.books.service.order.OrderService;
 
 @Named
 @SessionScoped
 public class OrderBean implements Serializable {
+
     private static final String PLACE_ORDER_FAILED = "ch.bfh.amasoon.presenter.OrderBean.PLACE_ORDER_FAILED";
     private static final String NO_BOOK_FOUND = "ch.bfh.amasoon.NO_BOOK_FOUND";
     private static final String ORDER_NOT_CANCELABLE = "ch.bfh.amasoon.ORDER_NOT_CANCELABLE";
-    private final OrderServiceMock orderService = OrderServiceMock.getInstance();
+    @EJB
+    private OrderService orderService;
     @Inject
     private CustomerBean customerBean;
     private List<LineItem> lineItems = new ArrayList<>();
@@ -39,7 +39,10 @@ public class OrderBean implements Serializable {
             }
         }
         if (isAdditionalBook) {
-            lineItems.add(new LineItem(book, 1));
+            LineItem lineItem = new LineItem();
+            lineItem.setBook(book);
+            lineItem.setQuantity(1);
+            lineItems.add(lineItem);
         }
     }
 
@@ -82,15 +85,10 @@ public class OrderBean implements Serializable {
 
     public String placeOrder() {
         try {
-            String email = customerBean.getEmail();
-            if (Strings.isNullOrEmpty(email)) {
-                Customer customer = customerBean.getCustomer();
-                email = customer.getEmail();
-            }
-            orderNumber = orderService.placeOrder(email, lineItems);
+            orderNumber = orderService.placeOrder(customerBean.getCustomer(), lineItems);
             lineItems.clear();
             return "orderConfirmation";
-        } catch (CustomerNotFoundException | CreditCardExpiredException ex) {
+        } catch (CreditCardExpiredException ex) {
             MessageFactory.error(PLACE_ORDER_FAILED);
         }
         return null;
@@ -102,7 +100,7 @@ public class OrderBean implements Serializable {
 
     public void cancelOrder(String orderNumber) {
         try {
-            orderService.cancelOrder(orderNumber);
+            orderService.cancelOrder(orderService.findOrder(orderNumber));
         } catch (OrderNotFoundException ex) {
             MessageFactory.error(NO_BOOK_FOUND, orderNumber);
         } catch (OrderNotCancelableException ex) {

@@ -29,7 +29,7 @@
                 <h:message id="emailMessage" for="email" errorClass="error" styleClass="error"/>
 
                 <h:outputText value="#{translations.customerPassword}" rendered="#{not readonly}" />
-                <h:inputSecret id="password" value="#{customerBean.customer.password}" required="true" 
+                <h:inputSecret id="password" value="#{customerBean.password}" required="true" 
                                requiredMessage="#{translations.customerPasswordRequired}" rendered="#{not readonly}">
                     <f:validator validatorId="ch.bfh.amasoon.components.PasswordValidator"/>
                     <f:ajax event="blur" render="passwordMessage"/>
