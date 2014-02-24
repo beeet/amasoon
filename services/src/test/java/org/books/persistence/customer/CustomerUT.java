@@ -22,28 +22,27 @@ public class CustomerUT {
         validator = factory.getValidator();
     }
 
-        @Test
+    @Test
     public void validate_IsValid_NoConstraintViolation() {
         //arrange
         CreditCard creditcard = new CreditCard();
         creditcard.setType(CreditCard.Type.MasterCard);
         creditcard.setNumber("5411222233334445");
-        creditcard.setExpirationDate(new Date(115,6,18));
+        creditcard.setExpirationDate(new Date(115, 6, 18));
         //act
         Set<ConstraintViolation<CreditCard>> violations = validator.validate(creditcard);
         //assert
         assertTrue(violations.isEmpty());
     }
-    
-    
+
     @Test
     public void validate_IsExpired_ConstraintViolation() {
         //arrange
         CreditCard creditcard = new CreditCard();
         creditcard.setType(CreditCard.Type.MasterCard);
         creditcard.setNumber("5411222233334445");
-        creditcard.setExpirationDate(new Date(113,6,18));
-        
+        creditcard.setExpirationDate(new Date(113, 6, 18));
+
         //act
         Set<ConstraintViolation<CreditCard>> violations = validator.validate(creditcard);
         //assert

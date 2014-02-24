@@ -21,7 +21,6 @@ public class ExpirationDateValidator implements ConstraintValidator<ExpirationDa
             //NULL wird nicht als falsch interpretiert (kein Verstoss)
             return true;
         }
-        return true;
-//        return sdf.format(expirationDate).compareTo(sdf.format(new java.util.Date())) > -1;
+        return sdf.format(expirationDate).compareTo(sdf.format(new java.util.Date())) > -1;
     }
 }
