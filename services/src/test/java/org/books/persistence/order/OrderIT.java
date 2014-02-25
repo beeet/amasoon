@@ -99,6 +99,7 @@ public class OrderIT {
         em.getTransaction().begin();
         em.persist(customer);
         em.persist(book);
+        em.persist(lineItem);
         em.persist(order);
         em.getTransaction().commit();
 
@@ -106,6 +107,7 @@ public class OrderIT {
         em.getTransaction().begin();
         em.remove(em.find(Customer.class, customer.getId()));
         em.remove(em.find(Order.class, order.getId()));
+        em.remove(em.find(LineItem.class, lineItem.getId()));
         em.remove(em.find(Book.class, book.getId()));
         em.getTransaction().commit();
     }
@@ -181,6 +183,7 @@ public class OrderIT {
         book.setPublicationDate(new Date(System.currentTimeMillis()));
         book.setTitle("Java in a Nutshel");
         book.setPrice(new BigDecimal(12.50));
+        em.persist(book);
         return book;
     }
 
